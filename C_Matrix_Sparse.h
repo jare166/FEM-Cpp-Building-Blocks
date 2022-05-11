@@ -1,8 +1,6 @@
 #ifndef C_MATRIX_SPARSE_H
 #define C_MATRIX_SPARSE_H
 
-#include <eigen-3.4.0/Eigen/Dense>
-#include <eigen-3.4.0/Eigen/Sparse>
 #include <math.h>
 #include <vector>
 #include <iostream>
@@ -388,36 +386,6 @@ class C_Matrix_Sparse{
 
             row_ind[ii + 1] += row_ind[ii]; 
         }
-    }
-
-    void convert_to_Eigen(Eigen::SparseMatrix<double>& kG_eigen) {
-        /*!
-        Initialize an array suitable for use with Eigen linear solver.
-
-        DIJ (4-19-22)
-        */
-
-        std::vector< Eigen::Triplet<double> > temp_COO(NNZ);
-
-        // Iterate over rows
-        int kk = 0;
-        for (int jj = 0; jj <= row_size; jj++) {
-            std::forward_list<double>::iterator it_v = value_list[jj].begin();
-            std::forward_list<int>::iterator    it_c = col_ind_list[jj].begin();
-
-            int init_length = std::distance(value_list[jj].begin(), value_list[jj].end());
-
-            // Iterate over columns
-            for (int ii = 0; ii < init_length; ii++) {
-                // Store as (row, column, value) for each element of Triplet Vector
-                temp_COO[kk++] = Eigen::Triplet<double> (jj, *it_c, *it_v);
-                ++it_v; ++it_c;
-            }
-        }
-
-        // Store as Eigen SparseMatrix
-        kG_eigen.setFromTriplets(temp_COO.begin(), temp_COO.end());
-        // kG_eigen.makeCompressed();
     }
 
 
