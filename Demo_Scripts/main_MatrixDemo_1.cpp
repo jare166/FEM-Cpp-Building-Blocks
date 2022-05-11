@@ -4,8 +4,8 @@
 #include <iterator>
 #include <list>
 
-#include "C_Matrix_Sparse.h"
-#include "C_Matrix_Dense.h"
+#include "../C_Matrix_Sparse.h"
+#include "../C_Matrix_Dense.h"
 
 int main()
 {
