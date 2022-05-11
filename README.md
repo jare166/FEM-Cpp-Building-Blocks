@@ -44,8 +44,9 @@ std::cout << C;
 
 Contributors
 ------------
-Dominic Jarecki
-Bensingh Dhas
+**Dominic Jarecki**
+
+**Bensingh Dhas**
 
 
 Acknowledgements
