@@ -17,11 +17,34 @@ Installation
 
 Implementation
 ------------
-[Demo scripts] are included
+[Demo scripts][Demo_LINK] are included that show how to construct matrices and display. The syntax is simple, and is designed to be MATLAB-like where possible.
+>Basic Assignment to Matrices
 
+```c++
+C_Matrix_Dense A(2,2) = {1, 2, 3, 4}; // Stored as { {1, 2}; {3, 4} } --> Enter in Row-Major ordering
+
+C_Matrix_Dense B(2,2);
+B = -A.T(); // Set B equal to negative of A-transpose.
+```
+
+>Write to Sparse Matrix
+
+```c++
+C_Matrix_Sparse C(6,6); // Default NNZ = 0;
+C.add_matr(B, {3,4}, {2, 3}); // Store Contents of Dense Matrix on rows 4:5 and columns 3:5 (C++ is zero-indexed)
+```
+
+>Display to Terminal
+
+```c++
+std::cout << A;
+std::cout << B;
+std::cout << C;
+```
 
 
 [RMF_LINK]: https://en.wikipedia.org/wiki/Row-_and_column-major_order
 [COO_LINK]: https://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_(COO)
 [CSR_LINK]: https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_row_(CSR,_CRS_or_Yale_format)
 [Solver_LINK]: https://github.com/jare166/FEM-Cpp-Building-Blocks/tree/main/Solver_Interfaces
+[Demo_LINK]: https://github.com/jare166/FEM-Cpp-Building-Blocks/tree/main/Demo_Scripts
