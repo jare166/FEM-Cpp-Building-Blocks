@@ -52,7 +52,9 @@ Contributors
 Acknowledgements
 ------------
 In association with:
+
 [CONTINUUM MECHANICS @ TAMU][CM_LINK]
+
 [Center of Innovation in Mechanics for Design and Manufacturing (CIMDM)][CIMDM_LINK]
 
 
