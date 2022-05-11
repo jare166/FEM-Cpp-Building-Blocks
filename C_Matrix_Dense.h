@@ -43,6 +43,7 @@ class C_Matrix_Dense{
         for (int ii = 0; ii < NNZ; ii++) { values[ii] = 0.0; }
     }
 
+
     // II. Operator Overloads
     //! Access Operation
     double& operator() (int r_i, int c_i) { 
@@ -155,13 +156,13 @@ class C_Matrix_Dense{
         }
         return obj_out;
     }
+    
     //! Return copy of object containing matrix negation
     C_Matrix_Dense operator-() {
         C_Matrix_Dense obj_out = (*this);
         for (int ii = 0; ii < (*this).NNZ; ii++) { obj_out.values[ii] = -obj_out.values[ii]; }
         return obj_out;
     }
-
     //! Return copy of object flagged as Transposed
     C_Matrix_Dense T () {
         // Copy Matrix
@@ -186,6 +187,7 @@ class C_Matrix_Dense{
 
         return in_prod;
     }
+
 
     // III. Utility Functions
     bool check_size(C_Matrix_Dense obj1, C_Matrix_Dense obj2) {
@@ -261,7 +263,7 @@ class C_Matrix_Dense{
 
 
 //! EXTERNAL FUNCTIONS
-//! i. Operator Overload for Output 
+//! Operator Overload for Output 
 /*! 
 This overload is performed exterior to the C_Matrix_... class so that it can be 
 accessed by the std::ostream class and standard syntax can be employed.
@@ -280,7 +282,7 @@ std::ostream& operator<<(std::ostream& os, C_Matrix_Dense obj) {
     return os;
 }
 
-//! ii. Generate Identity Matrix
+//! Generate Identity Matrix
 C_Matrix_Dense identity(int dim) {
     C_Matrix_Dense obj_out(dim, dim);
     for (int ii = 0; ii < dim; ii++) { obj_out.values[(ii*(1+dim))] = 1; }
