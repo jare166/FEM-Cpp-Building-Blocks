@@ -17,7 +17,7 @@ Installation
 
 Implementation
 ------------
-[Demo scripts][Demo_LINK] are included that show how to construct matrices and display. The syntax is simple, and is designed to be MATLAB-like where possible.
+[Demo scripts][Demo_LINK] are included that show how to construct matrices and display to the terminal. The syntax is simple, and is designed to be MATLAB-like where possible.
 >Basic Assignment to Matrices
 
 ```c++
@@ -42,9 +42,25 @@ std::cout << B;
 std::cout << C;
 ```
 
+Contributors
+------------
+Dominic Jarecki
+Bensingh Dhas
+
+
+Acknowledgements
+------------
+In association with:
+[CONTINUUM MECHANICS @ TAMU][CM_LINK]
+[Center of Innovation in Mechanics for Design and Manufacturing (CIMDM)][CIMDM_LINK]
+
+
+
 
 [RMF_LINK]: https://en.wikipedia.org/wiki/Row-_and_column-major_order
 [COO_LINK]: https://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_(COO)
 [CSR_LINK]: https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_row_(CSR,_CRS_or_Yale_format)
 [Solver_LINK]: https://github.com/jare166/FEM-Cpp-Building-Blocks/tree/main/Solver_Interfaces
 [Demo_LINK]: https://github.com/jare166/FEM-Cpp-Building-Blocks/tree/main/Demo_Scripts
+[CM_LINK]: https://continuummechanics.tamu.edu/home/
+[CIMDM_LINK]: https://cimdm.tamu.edu/
