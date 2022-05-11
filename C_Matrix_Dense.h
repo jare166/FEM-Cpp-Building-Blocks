@@ -98,6 +98,27 @@ class C_Matrix_Dense{
         }
         return (*this);
     }
+    //! Assignment Operator, from Array
+    C_Matrix_Dense operator=(double *obj2) {
+        // 1. Assignment to Empty Object: Unable to determine size
+        if ( (*this).row_size == -1 ) {  C_Matrix_Dense obj_out; return obj_out; }
+
+        // 2. Assume Object Sizes Match, Assign Values
+        for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = obj2[ii]; }
+        
+        return (*this);
+    }
+    //! Assignment Operator, from Vector
+    C_Matrix_Dense operator=(std::vector<double> obj2) {
+        // 1. Assignment to Empty Object: Unable to determine size
+        if ( (*this).row_size == -1 ) {  C_Matrix_Dense obj_out; return obj_out; }
+
+        // 2. Assume Object Sizes Match, Assign Values
+        for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = obj2[ii]; }
+        
+        return (*this);
+    }
+    
     //! Matrix Multiplication
     C_Matrix_Dense operator*(C_Matrix_Dense obj2) {
         /*!

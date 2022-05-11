@@ -13,6 +13,10 @@ int main()
     C_Matrix_Dense A1(4,4), B1(4,4), C1(4,6);
     C_Matrix_Dense A2(4,3), B2(3,4), C2(3,3);
 
+    C_Matrix_Dense A3(2,2);
+    A3 = {1, 2, 3, 4};
+    std::cout << A3;
+
     // Assignments
     // i. Part I
     A1(0,0) = 4;   A1(0,2) = 3; 
@@ -122,7 +126,6 @@ int main()
     std::cout << "\n Outer Product \n";
     std::cout << b*a;
 
-    /*
     // 5. Assign to Sparse Matrix
     C_Matrix_Sparse Z1(6,6);
     C_Matrix_Sparse Z2(6,6);
@@ -142,7 +145,6 @@ int main()
     Z2.add_matr(A1, e, f);
     std::cout << A1;
     std::cout << Z2;
-    */
 
     return 0;
 }
