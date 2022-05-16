@@ -61,6 +61,21 @@ class C_Matrix_Dense{
         int col_1 = (*this).col_size;
         int ij; 
 
+        // EXCEPTION: Check for out-of-range access
+        if ( r_i > row_1 ) { 
+            std::string error_message = "Requested row index ";
+            error_message = error_message + std::to_string(r_i) + " > total row size " + std::to_string(row_1);
+
+            throw std::out_of_range(error_message); 
+            }
+        if ( c_i > col_1 ) {
+            std::string error_message = "Requested column index ";
+            error_message = error_message + std::to_string(c_i) + " > total column size " + std::to_string(col_1);
+
+            throw std::out_of_range(error_message); 
+        }
+
+        // Determine access index for vector of values
         if (!(*this).transpose) { ij = r_i*col_1 + c_i; }
         else                    { ij = c_i*row_1 + r_i; }
 
@@ -89,10 +104,10 @@ class C_Matrix_Dense{
             (*this).values.resize(NNZ);
         }
 
-        // 2. Error; Object Size Mismatch
-        if (!check_size((*this), obj2)) { C_Matrix_Dense obj_out; return obj_out; }
+        // 2. EXCEPTION: Object Size Mismatch
+        if (!check_size((*this), obj2)) { throw std::length_error("Assignment failed. Dense matrix size mismatch."); }
 
-        // 3. Object Sizes Match, Assign Values
+        // 2. Object Sizes Match, Assign Values
         for (int ii = 0; ii < (*this).row_size; ii++) {
             for (int jj = 0; jj < (*this).col_size; jj++) { (*this)(ii,jj) = obj2(ii,jj); }
         }
@@ -101,7 +116,7 @@ class C_Matrix_Dense{
     //! Assignment Operator, from Array
     C_Matrix_Dense operator=(double *obj2) {
         // 1. Assignment to Empty Object: Unable to determine size
-        if ( (*this).row_size == -1 ) {  C_Matrix_Dense obj_out; return obj_out; }
+        if ( (*this).row_size == -1 ) { throw std::length_error("Assignment failed. Empty dense matrix object; unable to determine size."); }
 
         // 2. Assume Object Sizes Match, Assign Values
         for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = obj2[ii]; }
@@ -111,7 +126,7 @@ class C_Matrix_Dense{
     //! Assignment Operator, from Vector
     C_Matrix_Dense operator=(std::vector<double> obj2) {
         // 1. Assignment to Empty Object: Unable to determine size
-        if ( (*this).row_size == -1 ) {  C_Matrix_Dense obj_out; return obj_out; }
+        if ( (*this).row_size == -1 ) { throw std::length_error("Assignment failed. Empty dense matrix object; unable to determine size."); }
 
         // 2. Assume Object Sizes Match, Assign Values
         for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = obj2[ii]; }
@@ -131,7 +146,7 @@ class C_Matrix_Dense{
 
         // i. Check if inner dimensions match
         int ii_M, jj_M, kk_M; // Bounds for Loops
-        if (!check_size((*this), obj2, ii_M, jj_M, kk_M)) { C_Matrix_Dense obj_out; return obj_out; }
+        if (!check_size((*this), obj2, ii_M, jj_M, kk_M)) { throw std::length_error("Multiplication failed. Inner dimensions do not match."); }
 
         // Initialize object to appropriate size
         C_Matrix_Dense obj_out(ii_M, jj_M); 
@@ -156,8 +171,8 @@ class C_Matrix_Dense{
     //! Matrix Addition
     C_Matrix_Dense operator+(C_Matrix_Dense obj2) {
         // Check: Ensure both matrices are the same size
-        if (!((*this).row_size == obj2.row_size)) { C_Matrix_Dense obj_out; return obj_out; }
-        if (!((*this).col_size == obj2.col_size)) { C_Matrix_Dense obj_out; return obj_out; }
+        if (!((*this).row_size == obj2.row_size)) { throw std::length_error("Addition failed. Row size mismatch."); }
+        if (!((*this).col_size == obj2.col_size)) { throw std::length_error("Addition failed. Column size mismatch."); }
 
         C_Matrix_Dense obj_out((*this).row_size, (*this).col_size);
         for (int ii = 0; ii < (*this).row_size; ii++) {
@@ -168,8 +183,8 @@ class C_Matrix_Dense{
     //! Matrix Subtraction
     C_Matrix_Dense operator-(C_Matrix_Dense obj2) {
         // Check: Ensure both matrices are the same size
-        if (!((*this).row_size == obj2.row_size)) { C_Matrix_Dense obj_out; return obj_out; }
-        if (!((*this).col_size == obj2.col_size)) { C_Matrix_Dense obj_out; return obj_out; }
+        if (!((*this).row_size == obj2.row_size)) { throw std::length_error("Addition failed. Row size mismatch."); }
+        if (!((*this).col_size == obj2.col_size)) { throw std::length_error("Addition failed. Column size mismatch."); }
 
         C_Matrix_Dense obj_out((*this).row_size, (*this).col_size);
         for (int ii = 0; ii < (*this).row_size; ii++) {
@@ -199,7 +214,7 @@ class C_Matrix_Dense{
 
     //! Inner Product
     double inner_product(C_Matrix_Dense obj2) {
-        if ((*this).NNZ != obj2.NNZ) { double in_prod = -500; return in_prod; }
+        if ((*this).NNZ != obj2.NNZ) { throw std::length_error("Inner product failed. NNZ elements mismatch."); }
 
         double in_prod = 0.0;
         for (int ii = 0; ii < (*this).row_size; ii++) {
