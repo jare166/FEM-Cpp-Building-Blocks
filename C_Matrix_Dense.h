@@ -5,6 +5,8 @@
 #include <iomanip>
 #include <exception>
 
+// Report File and Line Number
+#define throw_line(arg) throw my_exception(arg, __FILE__, __LINE__);
 
 //! This code initializes dense matrix objects for use in constructing global FEM matrices.
 /*!
@@ -65,13 +67,15 @@ class C_Matrix_Dense{
         if ( r_i > row_1 ) { 
             std::string error_message = "Requested row index ";
             error_message = error_message + std::to_string(r_i) + " > total row size " + std::to_string(row_1);
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
 
             throw std::out_of_range(error_message); 
             }
         if ( c_i > col_1 ) {
             std::string error_message = "Requested column index ";
             error_message = error_message + std::to_string(c_i) + " > total column size " + std::to_string(col_1);
-
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
             throw std::out_of_range(error_message); 
         }
 
@@ -105,7 +109,12 @@ class C_Matrix_Dense{
         }
 
         // 2. EXCEPTION: Object Size Mismatch
-        if (!check_size((*this), obj2)) { throw std::length_error("Assignment failed. Dense matrix size mismatch."); }
+        if (!check_size((*this), obj2)) { 
+            std::string error_message = "Assignment failed. Dense matrix size mismatch.";
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::length_error(error_message); 
+        }
 
         // 2. Object Sizes Match, Assign Values
         for (int ii = 0; ii < (*this).row_size; ii++) {
@@ -116,7 +125,12 @@ class C_Matrix_Dense{
     //! Assignment Operator, from Array
     C_Matrix_Dense operator=(double *obj2) {
         // 1. Assignment to Empty Object: Unable to determine size
-        if ( (*this).row_size == -1 ) { throw std::length_error("Assignment failed. Empty dense matrix object; unable to determine size."); }
+        if ( (*this).row_size == -1 ) { 
+            std::string error_message = "Assignment failed. Empty dense matrix object; unable to determine size.";
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::length_error(error_message); 
+            }
 
         // 2. Assume Object Sizes Match, Assign Values
         for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = obj2[ii]; }
@@ -126,7 +140,12 @@ class C_Matrix_Dense{
     //! Assignment Operator, from Vector
     C_Matrix_Dense operator=(std::vector<double> obj2) {
         // 1. Assignment to Empty Object: Unable to determine size
-        if ( (*this).row_size == -1 ) { throw std::length_error("Assignment failed. Empty dense matrix object; unable to determine size."); }
+        if ( (*this).row_size == -1 ) { 
+            std::string error_message = "Assignment failed. Empty dense matrix object; unable to determine size.";
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
+            throw std::length_error(error_message); 
+        }
 
         // 2. Assume Object Sizes Match, Assign Values
         for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = obj2[ii]; }
@@ -146,7 +165,12 @@ class C_Matrix_Dense{
 
         // i. Check if inner dimensions match
         int ii_M, jj_M, kk_M; // Bounds for Loops
-        if (!check_size((*this), obj2, ii_M, jj_M, kk_M)) { throw std::length_error("Multiplication failed. Inner dimensions do not match."); }
+        if (!check_size((*this), obj2, ii_M, jj_M, kk_M)) { 
+            std::string error_message = "Multiplication failed. Inner dimensions do not match.";
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
+            throw std::length_error(error_message); 
+            }
 
         // Initialize object to appropriate size
         C_Matrix_Dense obj_out(ii_M, jj_M); 
@@ -171,8 +195,18 @@ class C_Matrix_Dense{
     //! Matrix Addition
     C_Matrix_Dense operator+(C_Matrix_Dense obj2) {
         // Check: Ensure both matrices are the same size
-        if (!((*this).row_size == obj2.row_size)) { throw std::length_error("Addition failed. Row size mismatch."); }
-        if (!((*this).col_size == obj2.col_size)) { throw std::length_error("Addition failed. Column size mismatch."); }
+        if (!((*this).row_size == obj2.row_size)) {
+            std::string error_message = "Addition failed. Row size mismatch.";
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
+            throw std::length_error(error_message);
+            }
+        if (!((*this).col_size == obj2.col_size)) {
+            std::string error_message = "Addition failed. Column size mismatch.";
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
+            throw std::length_error(error_message);
+            }
 
         C_Matrix_Dense obj_out((*this).row_size, (*this).col_size);
         for (int ii = 0; ii < (*this).row_size; ii++) {
@@ -214,7 +248,12 @@ class C_Matrix_Dense{
 
     //! Inner Product
     double inner_product(C_Matrix_Dense obj2) {
-        if ((*this).NNZ != obj2.NNZ) { throw std::length_error("Inner product failed. NNZ elements mismatch."); }
+        if ((*this).NNZ != obj2.NNZ) { 
+            std::string error_message = "Inner product failed. NNZ elements mismatch.";
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
+            throw std::length_error(error_message);
+            }
 
         double in_prod = 0.0;
         for (int ii = 0; ii < (*this).row_size; ii++) {
