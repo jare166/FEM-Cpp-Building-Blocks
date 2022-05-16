@@ -75,7 +75,7 @@ class C_Matrix_Dense{
             std::string error_message = "Requested column index ";
             error_message = error_message + std::to_string(c_i) + " > total column size " + std::to_string(col_1);
             error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-            
+
             throw std::out_of_range(error_message); 
         }
 
@@ -197,16 +197,16 @@ class C_Matrix_Dense{
         // Check: Ensure both matrices are the same size
         if (!((*this).row_size == obj2.row_size)) {
             std::string error_message = "Addition failed. Row size mismatch.";
-            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
             
             throw std::length_error(error_message);
-            }
+        }
         if (!((*this).col_size == obj2.col_size)) {
             std::string error_message = "Addition failed. Column size mismatch.";
-            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
             
             throw std::length_error(error_message);
-            }
+        }
 
         C_Matrix_Dense obj_out((*this).row_size, (*this).col_size);
         for (int ii = 0; ii < (*this).row_size; ii++) {
@@ -217,8 +217,18 @@ class C_Matrix_Dense{
     //! Matrix Subtraction
     C_Matrix_Dense operator-(C_Matrix_Dense obj2) {
         // Check: Ensure both matrices are the same size
-        if (!((*this).row_size == obj2.row_size)) { throw std::length_error("Addition failed. Row size mismatch."); }
-        if (!((*this).col_size == obj2.col_size)) { throw std::length_error("Addition failed. Column size mismatch."); }
+        if (!((*this).row_size == obj2.row_size)) { 
+            std::string error_message = "Subtraction failed. Row size mismatch."; 
+            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
+            throw std::length_error(error_message);
+        }
+        if (!((*this).col_size == obj2.col_size)) { 
+            std::string error_message = "Subtraction failed. Column size mismatch."; 
+            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
+            throw std::length_error(error_message);
+        }
 
         C_Matrix_Dense obj_out((*this).row_size, (*this).col_size);
         for (int ii = 0; ii < (*this).row_size; ii++) {
