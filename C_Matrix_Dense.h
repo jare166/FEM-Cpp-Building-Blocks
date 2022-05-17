@@ -5,8 +5,11 @@
 #include <iomanip>
 #include <exception>
 
+#include "f_MiscellaneousFunctions.h"
+
 // Report File and Line Number
 #define throw_line(arg) throw my_exception(arg, __FILE__, __LINE__);
+
 
 //! This code initializes dense matrix objects for use in constructing global FEM matrices.
 /*!
@@ -70,7 +73,7 @@ class C_Matrix_Dense{
             error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
 
             throw std::out_of_range(error_message); 
-            }
+        }
         if ( c_i > col_1 ) {
             std::string error_message = "Requested column index ";
             error_message = error_message + std::to_string(c_i) + " > total column size " + std::to_string(col_1);
@@ -86,7 +89,180 @@ class C_Matrix_Dense{
         // Access value assigned
         double& access_val = (*this).values[ij];
         return access_val;
+    }
+    //! Slice Operations --> NOT PASSED BY REFERENCE
+    //!     i.   Slice: (row, col_range)
+    C_Matrix_Dense operator() (int r_i, std::vector<int> c_i) { 
+        //! Access Contents of Matrix
+        /*! 
+        This function returns a slice of elements contained in C_Matrix_Dense. NOT passed by
+        reference, so the values within the matrix itself cannot be modified directly through this method.
+
+        Contents are stored in row-major format!
+
+        DIJ (5-17-22)
+        */
+
+        int row_1 = (*this).row_size; // first matrix
+        int col_1 = (*this).col_size;
+
+        int c_start = c_i[0];
+        int c_end   = c_i[1];
+
+        std::vector<int> c_s = intspace(c_start, c_end);
+
+        int ij; 
+
+        // EXCEPTION: Check for out-of-range access
+        if ( r_i > row_1 ) { 
+            std::string error_message = "Requested row index ";
+            error_message = error_message + std::to_string(r_i) + " > total row size " + std::to_string(row_1);
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::out_of_range(error_message); 
         }
+        if (( c_start > col_1 ) | ( c_end > col_1 )) {
+            std::string error_message = "Requested column slice ";
+            error_message = error_message + std::to_string(c_start) + ":" + std::to_string(c_end);
+            error_message = error_message + " violates total column size " + std::to_string(col_1);
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::out_of_range(error_message); 
+        }
+
+        // Initialize Output to Correct Size
+        int num_rows = 1;
+        int num_cols = c_s.size();
+        C_Matrix_Dense access_slice(num_rows, num_cols);
+
+        // Determine access index for vector of values
+        for (int jj = 0; jj < num_cols; jj++) {
+            if (!(*this).transpose) { ij = r_i*col_1 + c_s[jj]; }
+            else                    { ij = c_s[jj]*row_1 + r_i; }
+
+            access_slice(0,jj) = (*this).values[ij];
+        }
+
+        // Access value assigned
+        return access_slice;
+    }
+    //!     ii.  Slice: (row_range, col)
+    C_Matrix_Dense operator() (std::vector<int> r_i, int c_i) { 
+        //! Access Contents of Matrix
+        /*! 
+        This function returns a slice of elements contained in C_Matrix_Dense. NOT passed by
+        reference, so the values within the matrix itself cannot be modified directly through this method.
+
+        Contents are stored in row-major format!
+
+        DIJ (5-17-22)
+        */
+
+        int row_1 = (*this).row_size; // first matrix
+        int col_1 = (*this).col_size;
+
+        int r_start = r_i[0];
+        int r_end   = r_i[1];
+
+        std::vector<int> r_s = intspace(r_start, r_end);
+
+        int ij; 
+
+        // EXCEPTION: Check for out-of-range access
+        if ( c_i > col_1 ) { 
+            std::string error_message = "Requested column index ";
+            error_message = error_message + std::to_string(c_i) + " > total column size " + std::to_string(col_1);
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::out_of_range(error_message); 
+        }
+        if (( r_start > row_1 ) | ( r_end > row_1 )) {
+            std::string error_message = "Requested row slice ";
+            error_message = error_message + std::to_string(r_start) + ":" + std::to_string(r_end);
+            error_message = error_message + " violates total row size " + std::to_string(row_1);
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::out_of_range(error_message); 
+        }
+
+        // Initialize Output to Correct Size
+        int num_rows = r_s.size();
+        int num_cols = 1;
+        C_Matrix_Dense access_slice(num_rows, num_cols);
+
+        // Determine access index for vector of values
+        for (int ii = 0; ii < num_rows; ii++) {
+            if (!(*this).transpose) { ij = r_s[ii]*col_1 + c_i; }
+            else                    { ij = c_i*row_1 + r_s[ii]; }
+
+            access_slice(ii,0) = (*this).values[ij];
+        }
+
+        // Access value assigned
+        return access_slice;
+    }
+    //!     iii. Slice: (row_range, col_range)
+    C_Matrix_Dense operator() (std::vector<int> r_i, std::vector<int> c_i) { 
+        //! Access Contents of Matrix
+        /*! 
+        This function returns a slice of elements contained in C_Matrix_Dense. NOT passed by
+        reference, so the values within the matrix itself cannot be modified directly through this method.
+
+        Contents are stored in row-major format!
+
+        DIJ (5-17-22)
+        */
+
+        int row_1 = (*this).row_size; // first matrix
+        int col_1 = (*this).col_size;
+
+        int r_start = r_i[0];
+        int r_end   = r_i[1];
+
+        int c_start = c_i[0];
+        int c_end   = c_i[1];
+
+        std::vector<int> r_s = intspace(r_start, r_end);
+        std::vector<int> c_s = intspace(c_start, c_end);
+
+        int ij; 
+
+        // EXCEPTION: Check for out-of-range access
+        if (( r_start > row_1 ) | ( r_end > row_1 )) {
+            std::string error_message = "Requested row slice ";
+            error_message = error_message + std::to_string(r_start) + ":" + std::to_string(r_end);
+            error_message = error_message + " violates total row size " + std::to_string(row_1);
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::out_of_range(error_message); 
+        }
+        if (( c_start > col_1 ) | ( c_end > col_1 )) {
+            std::string error_message = "Requested column slice ";
+            error_message = error_message + std::to_string(c_start) + ":" + std::to_string(c_end);
+            error_message = error_message + " violates total column size " + std::to_string(col_1);
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::out_of_range(error_message); 
+        }
+
+        // Initialize Output to Correct Size
+        int num_rows = r_s.size();
+        int num_cols = c_s.size();
+        C_Matrix_Dense access_slice(num_rows, num_cols);
+
+        // Determine access index for vector of values
+        for (int ii = 0; ii < num_rows; ii++) {
+            for (int jj = 0; jj < num_cols; jj++) {
+                if (!(*this).transpose) { ij = r_s[ii]*col_1 + c_s[jj]; }
+                else                    { ij = c_s[jj]*row_1 + r_s[ii]; }
+
+                access_slice(ii,jj) = (*this).values[ij];
+            }
+        }
+
+        // Access value assigned
+        return access_slice;
+    }
 
     //! Assignment Operator, from Dense Matrix
     C_Matrix_Dense operator=(C_Matrix_Dense obj2) {
