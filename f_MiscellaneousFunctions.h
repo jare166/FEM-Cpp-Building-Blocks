@@ -4,10 +4,15 @@
 #include <math.h>
 #include <vector>
 
-template<typename T>
+// Function Declarations
+template <typename T> std::vector<T> linspace(int num_in, T start_in, T end_in);
+std::vector<int> intspace(int start_in, int end_in);
+template <typename T> int signum(T val);
+float Heaviside (int x);
+
 
 // i. Special Vector Initializations
-std::vector<T> linspace(int num_in, T start_in, T end_in)
+template <typename T> std::vector<T> linspace(int num_in, T start_in, T end_in)
 {
     //! Generate linear spaced STL-style vectors.
     std::vector<T> linspaced;
