@@ -285,18 +285,7 @@ class C_Matrix_Dense{
         }
 
         // 2. EXCEPTION: Object Size Mismatch
-        if (!((*this).row_size == obj2.row_size)) {
-            std::string error_message = "Assignment failed. Row size mismatch.";
-            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-            
-            throw std::length_error(error_message);
-        }
-        if (!((*this).col_size == obj2.col_size)) {
-            std::string error_message = "Assignment failed. Column size mismatch.";
-            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-            
-            throw std::length_error(error_message);
-        }
+        check_size_addt((*this), obj2, "Assignment");
 
         // 2. Object Sizes Match, Assign Values
         for (int ii = 0; ii < (*this).row_size; ii++) {
@@ -346,13 +335,8 @@ class C_Matrix_Dense{
         */
 
         // i. Check if inner dimensions match
-        int ii_M, jj_M, kk_M; // Bounds for Loops
-        if (!check_size_mult((*this), obj2, ii_M, jj_M, kk_M)) { 
-            std::string error_message = "Multiplication failed. Inner dimensions do not match.";
-            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-            
-            throw std::length_error(error_message); 
-            }
+        int ii_M, jj_M, kk_M; // Bounds for Loops     
+        check_size_mult((*this), obj2, "Multiplication", ii_M, jj_M, kk_M);
 
         // Initialize object to appropriate size
         C_Matrix_Dense obj_out(ii_M, jj_M); 
@@ -377,18 +361,7 @@ class C_Matrix_Dense{
     //! Matrix Addition
     C_Matrix_Dense operator+(C_Matrix_Dense obj2) {
         // Check: Ensure both matrices are the same size
-        if (!((*this).row_size == obj2.row_size)) {
-            std::string error_message = "Addition failed. Row size mismatch.";
-            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-            
-            throw std::length_error(error_message);
-        }
-        if (!((*this).col_size == obj2.col_size)) {
-            std::string error_message = "Addition failed. Column size mismatch.";
-            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-            
-            throw std::length_error(error_message);
-        }
+        check_size_addt((*this), obj2, "Addition");
 
         C_Matrix_Dense obj_out((*this).row_size, (*this).col_size);
         for (int ii = 0; ii < (*this).row_size; ii++) {
@@ -399,18 +372,7 @@ class C_Matrix_Dense{
     //! Matrix Subtraction
     C_Matrix_Dense operator-(C_Matrix_Dense obj2) {
         // Check: Ensure both matrices are the same size
-        if (!((*this).row_size == obj2.row_size)) { 
-            std::string error_message = "Subtraction failed. Row size mismatch."; 
-            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-            
-            throw std::length_error(error_message);
-        }
-        if (!((*this).col_size == obj2.col_size)) { 
-            std::string error_message = "Subtraction failed. Column size mismatch."; 
-            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-            
-            throw std::length_error(error_message);
-        }
+        check_size_addt((*this), obj2, "Subtraction");
 
         C_Matrix_Dense obj_out((*this).row_size, (*this).col_size);
         for (int ii = 0; ii < (*this).row_size; ii++) {
@@ -445,7 +407,7 @@ class C_Matrix_Dense{
             error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
             
             throw std::length_error(error_message);
-            }
+        }
 
         double in_prod = 0.0;
         for (int ii = 0; ii < (*this).row_size; ii++) {
@@ -457,16 +419,39 @@ class C_Matrix_Dense{
 
 
     // III. Utility Functions
-    bool check_size_mult(C_Matrix_Dense obj1, C_Matrix_Dense obj2, int& ii_M, int& jj_M, int& kk_M) {
-        //! Check that matrix sizes match before multiplication, AND return indices for use in sizing/multiplication
+    void check_size_addt(C_Matrix_Dense obj1, C_Matrix_Dense obj2, std::string op_string) {
+        //! Check that matrix sizes match before addition, etc.
+        /*!
+        This function checks size of two matrices intended for operations such as 
+        addition, subtraction, and assignment to ensure that a result can be computed.
+
+        \param obj1 First matrix to be compared
+        \param obj2 Second matrix to be compared
+        \param op_string String defining operation performed; e.g. "Addition"
+
+        \author Dominic Jarecki
+        \date 5-17-22 
+        */
+
+        if (!((*this).row_size == obj2.row_size)) {
+            std::string error_message = op_string + " failed. Row size mismatch.";
+            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
+            throw std::length_error(error_message);
+        }
+        if (!((*this).col_size == obj2.col_size)) {
+            std::string error_message = op_string + " failed. Column size mismatch.";
+            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
+            throw std::length_error(error_message);
+        }
+    }
+
+    void check_size_mult(C_Matrix_Dense obj1, C_Matrix_Dense obj2, std::string op_string, int& ii_M, int& jj_M, int& kk_M) {
+        //! Check that matrix inner dimensions match before multiplication
         /*!
         This function checks size of two matrices intended for a multiplication
         to ensure that a result can be computed.
-
-        If one or more of the objects is transposed, then the dimensions to be 
-        compared must be changed accordingly; this is because the transpose 
-        operation DOES NOT rearrange the contents of the matrix, but merely 
-        triggers a flag indicating that the object should be treated differently.
 
         Additionally, this function will initialize indices ii_M, jj_M, and kk_M 
         which can be used for multiplication, etc. (This will save on the number 
@@ -474,6 +459,7 @@ class C_Matrix_Dense{
 
         \param obj1 First matrix to be compared
         \param obj2 Second matrix to be compared
+        \param op_string String defining operation performed; e.g. "Multiplication"
         \param ii_M First index to be iterated over in multiplication, etc.
         \param jj_M Second index to be iterated over in multiplication, etc.
         \param kk_M Third index to be iterated over in multiplication, etc.
@@ -490,13 +476,16 @@ class C_Matrix_Dense{
         // i. Check if inner dimensions match
         // int ii_M, jj_M, kk_M; // Bounds for Loops
 
-        if (col_1 != row_2) { return false; }
+        if (col_1 != row_2) {
+            std::string error_message = op_string + " failed. Inner dimensions do not match.";
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
+            throw std::length_error(error_message); 
+        }
 
         ii_M = row_1; // Left  Outer Dimension
         jj_M = col_2; // Right Outer Dimension
         kk_M = col_1; // Inner Dimension
-
-        return true;
     }
 };
 
