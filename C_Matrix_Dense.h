@@ -285,11 +285,17 @@ class C_Matrix_Dense{
         }
 
         // 2. EXCEPTION: Object Size Mismatch
-        if (!check_size((*this), obj2)) { 
-            std::string error_message = "Assignment failed. Dense matrix size mismatch.";
-            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-
-            throw std::length_error(error_message); 
+        if (!((*this).row_size == obj2.row_size)) {
+            std::string error_message = "Assignment failed. Row size mismatch.";
+            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
+            throw std::length_error(error_message);
+        }
+        if (!((*this).col_size == obj2.col_size)) {
+            std::string error_message = "Assignment failed. Column size mismatch.";
+            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
+            throw std::length_error(error_message);
         }
 
         // 2. Object Sizes Match, Assign Values
@@ -341,7 +347,7 @@ class C_Matrix_Dense{
 
         // i. Check if inner dimensions match
         int ii_M, jj_M, kk_M; // Bounds for Loops
-        if (!check_size((*this), obj2, ii_M, jj_M, kk_M)) { 
+        if (!check_size_mult((*this), obj2, ii_M, jj_M, kk_M)) { 
             std::string error_message = "Multiplication failed. Inner dimensions do not match.";
             error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
             
@@ -451,39 +457,11 @@ class C_Matrix_Dense{
 
 
     // III. Utility Functions
-    bool check_size(C_Matrix_Dense obj1, C_Matrix_Dense obj2) {
-        //! Check that matrix sizes match before operation
+    bool check_size_mult(C_Matrix_Dense obj1, C_Matrix_Dense obj2, int& ii_M, int& jj_M, int& kk_M) {
+        //! Check that matrix sizes match before multiplication, AND return indices for use in sizing/multiplication
         /*!
-        This function checks size of two matrices intended for an operation
-        (such as +, -, or *) to ensure that a result can be computed.
-
-        If one or more of the objects is transposed, then the dimensions to be 
-        compared must be changed accordingly; this is because the transpose 
-        operation DOES NOT rearrange the contents of the matrix, but merely 
-        triggers a flag indicating that the object should be treated differently.
-
-        \param obj1 First matrix to be compared
-        \param obj2 Second matrix to be compared
-
-        \author Dominic Jarecki
-        \date 5-10-22 
-        */
-
-        int row_1 = (*this).row_size; // first matrix
-        int col_1 = (*this).col_size;
-        int row_2 = obj2.row_size;    // second matrix
-        int col_2 = obj2.col_size;
-
-        if (col_1 != row_2) { return false; }
-
-        return true;
-    }
-    
-    bool check_size(C_Matrix_Dense obj1, C_Matrix_Dense obj2, int& ii_M, int& jj_M, int& kk_M) {
-        //! Check that matrix sizes match before operation, AND return indices for use in sizing/multiplication
-        /*!
-        This function checks size of two matrices intended for an operation
-        (such as +, -, or *) to ensure that a result can be computed.
+        This function checks size of two matrices intended for a multiplication
+        to ensure that a result can be computed.
 
         If one or more of the objects is transposed, then the dimensions to be 
         compared must be changed accordingly; this is because the transpose 
