@@ -5,8 +5,11 @@
 #include <iomanip>
 #include <exception>
 
+#include "f_MiscellaneousFunctions.h"
+
 // Report File and Line Number
 #define throw_line(arg) throw my_exception(arg, __FILE__, __LINE__);
+
 
 //! This code initializes dense matrix objects for use in constructing global FEM matrices.
 /*!
@@ -70,7 +73,7 @@ class C_Matrix_Dense{
             error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
 
             throw std::out_of_range(error_message); 
-            }
+        }
         if ( c_i > col_1 ) {
             std::string error_message = "Requested column index ";
             error_message = error_message + std::to_string(c_i) + " > total column size " + std::to_string(col_1);
@@ -86,7 +89,180 @@ class C_Matrix_Dense{
         // Access value assigned
         double& access_val = (*this).values[ij];
         return access_val;
+    }
+    //! Slice Operations --> NOT PASSED BY REFERENCE
+    //!     i.   Slice: (row, col_range)
+    C_Matrix_Dense operator() (int r_i, std::vector<int> c_i) { 
+        //! Access Contents of Matrix
+        /*! 
+        This function returns a slice of elements contained in C_Matrix_Dense. NOT passed by
+        reference, so the values within the matrix itself cannot be modified directly through this method.
+
+        Contents are stored in row-major format!
+
+        DIJ (5-17-22)
+        */
+
+        int row_1 = (*this).row_size; // first matrix
+        int col_1 = (*this).col_size;
+
+        int c_start = c_i[0];
+        int c_end   = c_i[1];
+
+        std::vector<int> c_s = intspace(c_start, c_end);
+
+        int ij; 
+
+        // EXCEPTION: Check for out-of-range access
+        if ( r_i > row_1 ) { 
+            std::string error_message = "Requested row index ";
+            error_message = error_message + std::to_string(r_i) + " > total row size " + std::to_string(row_1);
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::out_of_range(error_message); 
         }
+        if (( c_start > col_1 ) | ( c_end > col_1 )) {
+            std::string error_message = "Requested column slice ";
+            error_message = error_message + std::to_string(c_start) + ":" + std::to_string(c_end);
+            error_message = error_message + " violates total column size " + std::to_string(col_1);
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::out_of_range(error_message); 
+        }
+
+        // Initialize Output to Correct Size
+        int num_rows = 1;
+        int num_cols = c_s.size();
+        C_Matrix_Dense access_slice(num_rows, num_cols);
+
+        // Determine access index for vector of values
+        for (int jj = 0; jj < num_cols; jj++) {
+            if (!(*this).transpose) { ij = r_i*col_1 + c_s[jj]; }
+            else                    { ij = c_s[jj]*row_1 + r_i; }
+
+            access_slice(0,jj) = (*this).values[ij];
+        }
+
+        // Access value assigned
+        return access_slice;
+    }
+    //!     ii.  Slice: (row_range, col)
+    C_Matrix_Dense operator() (std::vector<int> r_i, int c_i) { 
+        //! Access Contents of Matrix
+        /*! 
+        This function returns a slice of elements contained in C_Matrix_Dense. NOT passed by
+        reference, so the values within the matrix itself cannot be modified directly through this method.
+
+        Contents are stored in row-major format!
+
+        DIJ (5-17-22)
+        */
+
+        int row_1 = (*this).row_size; // first matrix
+        int col_1 = (*this).col_size;
+
+        int r_start = r_i[0];
+        int r_end   = r_i[1];
+
+        std::vector<int> r_s = intspace(r_start, r_end);
+
+        int ij; 
+
+        // EXCEPTION: Check for out-of-range access
+        if ( c_i > col_1 ) { 
+            std::string error_message = "Requested column index ";
+            error_message = error_message + std::to_string(c_i) + " > total column size " + std::to_string(col_1);
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::out_of_range(error_message); 
+        }
+        if (( r_start > row_1 ) | ( r_end > row_1 )) {
+            std::string error_message = "Requested row slice ";
+            error_message = error_message + std::to_string(r_start) + ":" + std::to_string(r_end);
+            error_message = error_message + " violates total row size " + std::to_string(row_1);
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::out_of_range(error_message); 
+        }
+
+        // Initialize Output to Correct Size
+        int num_rows = r_s.size();
+        int num_cols = 1;
+        C_Matrix_Dense access_slice(num_rows, num_cols);
+
+        // Determine access index for vector of values
+        for (int ii = 0; ii < num_rows; ii++) {
+            if (!(*this).transpose) { ij = r_s[ii]*col_1 + c_i; }
+            else                    { ij = c_i*row_1 + r_s[ii]; }
+
+            access_slice(ii,0) = (*this).values[ij];
+        }
+
+        // Access value assigned
+        return access_slice;
+    }
+    //!     iii. Slice: (row_range, col_range)
+    C_Matrix_Dense operator() (std::vector<int> r_i, std::vector<int> c_i) { 
+        //! Access Contents of Matrix
+        /*! 
+        This function returns a slice of elements contained in C_Matrix_Dense. NOT passed by
+        reference, so the values within the matrix itself cannot be modified directly through this method.
+
+        Contents are stored in row-major format!
+
+        DIJ (5-17-22)
+        */
+
+        int row_1 = (*this).row_size; // first matrix
+        int col_1 = (*this).col_size;
+
+        int r_start = r_i[0];
+        int r_end   = r_i[1];
+
+        int c_start = c_i[0];
+        int c_end   = c_i[1];
+
+        std::vector<int> r_s = intspace(r_start, r_end);
+        std::vector<int> c_s = intspace(c_start, c_end);
+
+        int ij; 
+
+        // EXCEPTION: Check for out-of-range access
+        if (( r_start > row_1 ) | ( r_end > row_1 )) {
+            std::string error_message = "Requested row slice ";
+            error_message = error_message + std::to_string(r_start) + ":" + std::to_string(r_end);
+            error_message = error_message + " violates total row size " + std::to_string(row_1);
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::out_of_range(error_message); 
+        }
+        if (( c_start > col_1 ) | ( c_end > col_1 )) {
+            std::string error_message = "Requested column slice ";
+            error_message = error_message + std::to_string(c_start) + ":" + std::to_string(c_end);
+            error_message = error_message + " violates total column size " + std::to_string(col_1);
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::out_of_range(error_message); 
+        }
+
+        // Initialize Output to Correct Size
+        int num_rows = r_s.size();
+        int num_cols = c_s.size();
+        C_Matrix_Dense access_slice(num_rows, num_cols);
+
+        // Determine access index for vector of values
+        for (int ii = 0; ii < num_rows; ii++) {
+            for (int jj = 0; jj < num_cols; jj++) {
+                if (!(*this).transpose) { ij = r_s[ii]*col_1 + c_s[jj]; }
+                else                    { ij = c_s[jj]*row_1 + r_s[ii]; }
+
+                access_slice(ii,jj) = (*this).values[ij];
+            }
+        }
+
+        // Access value assigned
+        return access_slice;
+    }
 
     //! Assignment Operator, from Dense Matrix
     C_Matrix_Dense operator=(C_Matrix_Dense obj2) {
@@ -109,12 +285,7 @@ class C_Matrix_Dense{
         }
 
         // 2. EXCEPTION: Object Size Mismatch
-        if (!check_size((*this), obj2)) { 
-            std::string error_message = "Assignment failed. Dense matrix size mismatch.";
-            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-
-            throw std::length_error(error_message); 
-        }
+        check_size_addt((*this), obj2, "Assignment");
 
         // 2. Object Sizes Match, Assign Values
         for (int ii = 0; ii < (*this).row_size; ii++) {
@@ -164,13 +335,8 @@ class C_Matrix_Dense{
         */
 
         // i. Check if inner dimensions match
-        int ii_M, jj_M, kk_M; // Bounds for Loops
-        if (!check_size((*this), obj2, ii_M, jj_M, kk_M)) { 
-            std::string error_message = "Multiplication failed. Inner dimensions do not match.";
-            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-            
-            throw std::length_error(error_message); 
-            }
+        int ii_M, jj_M, kk_M; // Bounds for Loops     
+        check_size_mult((*this), obj2, "Multiplication", ii_M, jj_M, kk_M);
 
         // Initialize object to appropriate size
         C_Matrix_Dense obj_out(ii_M, jj_M); 
@@ -195,18 +361,7 @@ class C_Matrix_Dense{
     //! Matrix Addition
     C_Matrix_Dense operator+(C_Matrix_Dense obj2) {
         // Check: Ensure both matrices are the same size
-        if (!((*this).row_size == obj2.row_size)) {
-            std::string error_message = "Addition failed. Row size mismatch.";
-            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-            
-            throw std::length_error(error_message);
-        }
-        if (!((*this).col_size == obj2.col_size)) {
-            std::string error_message = "Addition failed. Column size mismatch.";
-            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-            
-            throw std::length_error(error_message);
-        }
+        check_size_addt((*this), obj2, "Addition");
 
         C_Matrix_Dense obj_out((*this).row_size, (*this).col_size);
         for (int ii = 0; ii < (*this).row_size; ii++) {
@@ -217,18 +372,7 @@ class C_Matrix_Dense{
     //! Matrix Subtraction
     C_Matrix_Dense operator-(C_Matrix_Dense obj2) {
         // Check: Ensure both matrices are the same size
-        if (!((*this).row_size == obj2.row_size)) { 
-            std::string error_message = "Subtraction failed. Row size mismatch."; 
-            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-            
-            throw std::length_error(error_message);
-        }
-        if (!((*this).col_size == obj2.col_size)) { 
-            std::string error_message = "Subtraction failed. Column size mismatch."; 
-            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-            
-            throw std::length_error(error_message);
-        }
+        check_size_addt((*this), obj2, "Subtraction");
 
         C_Matrix_Dense obj_out((*this).row_size, (*this).col_size);
         for (int ii = 0; ii < (*this).row_size; ii++) {
@@ -263,7 +407,7 @@ class C_Matrix_Dense{
             error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
             
             throw std::length_error(error_message);
-            }
+        }
 
         double in_prod = 0.0;
         for (int ii = 0; ii < (*this).row_size; ii++) {
@@ -275,44 +419,39 @@ class C_Matrix_Dense{
 
 
     // III. Utility Functions
-    bool check_size(C_Matrix_Dense obj1, C_Matrix_Dense obj2) {
-        //! Check that matrix sizes match before operation
+    void check_size_addt(C_Matrix_Dense obj1, C_Matrix_Dense obj2, std::string op_string) {
+        //! Check that matrix sizes match before addition, etc.
         /*!
-        This function checks size of two matrices intended for an operation
-        (such as +, -, or *) to ensure that a result can be computed.
-
-        If one or more of the objects is transposed, then the dimensions to be 
-        compared must be changed accordingly; this is because the transpose 
-        operation DOES NOT rearrange the contents of the matrix, but merely 
-        triggers a flag indicating that the object should be treated differently.
+        This function checks size of two matrices intended for operations such as 
+        addition, subtraction, and assignment to ensure that a result can be computed.
 
         \param obj1 First matrix to be compared
         \param obj2 Second matrix to be compared
+        \param op_string String defining operation performed; e.g. "Addition"
 
         \author Dominic Jarecki
-        \date 5-10-22 
+        \date 5-17-22 
         */
 
-        int row_1 = (*this).row_size; // first matrix
-        int col_1 = (*this).col_size;
-        int row_2 = obj2.row_size;    // second matrix
-        int col_2 = obj2.col_size;
-
-        if (col_1 != row_2) { return false; }
-
-        return true;
+        if (!((*this).row_size == obj2.row_size)) {
+            std::string error_message = op_string + " failed. Row size mismatch.";
+            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
+            throw std::length_error(error_message);
+        }
+        if (!((*this).col_size == obj2.col_size)) {
+            std::string error_message = op_string + " failed. Column size mismatch.";
+            error_message = error_message + " Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
+            throw std::length_error(error_message);
+        }
     }
-    
-    bool check_size(C_Matrix_Dense obj1, C_Matrix_Dense obj2, int& ii_M, int& jj_M, int& kk_M) {
-        //! Check that matrix sizes match before operation, AND return indices for use in sizing/multiplication
-        /*!
-        This function checks size of two matrices intended for an operation
-        (such as +, -, or *) to ensure that a result can be computed.
 
-        If one or more of the objects is transposed, then the dimensions to be 
-        compared must be changed accordingly; this is because the transpose 
-        operation DOES NOT rearrange the contents of the matrix, but merely 
-        triggers a flag indicating that the object should be treated differently.
+    void check_size_mult(C_Matrix_Dense obj1, C_Matrix_Dense obj2, std::string op_string, int& ii_M, int& jj_M, int& kk_M) {
+        //! Check that matrix inner dimensions match before multiplication
+        /*!
+        This function checks size of two matrices intended for a multiplication
+        to ensure that a result can be computed.
 
         Additionally, this function will initialize indices ii_M, jj_M, and kk_M 
         which can be used for multiplication, etc. (This will save on the number 
@@ -320,6 +459,7 @@ class C_Matrix_Dense{
 
         \param obj1 First matrix to be compared
         \param obj2 Second matrix to be compared
+        \param op_string String defining operation performed; e.g. "Multiplication"
         \param ii_M First index to be iterated over in multiplication, etc.
         \param jj_M Second index to be iterated over in multiplication, etc.
         \param kk_M Third index to be iterated over in multiplication, etc.
@@ -336,13 +476,16 @@ class C_Matrix_Dense{
         // i. Check if inner dimensions match
         // int ii_M, jj_M, kk_M; // Bounds for Loops
 
-        if (col_1 != row_2) { return false; }
+        if (col_1 != row_2) {
+            std::string error_message = op_string + " failed. Inner dimensions do not match.";
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+            
+            throw std::length_error(error_message); 
+        }
 
         ii_M = row_1; // Left  Outer Dimension
         jj_M = col_2; // Right Outer Dimension
         kk_M = col_1; // Inner Dimension
-
-        return true;
     }
 };
 
