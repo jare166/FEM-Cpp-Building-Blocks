@@ -63,6 +63,7 @@ class C_Matrix_Sparse{
     }
 
     // II. Access Contents
+    //! 1. Basic Access Operation
     double& operator() (int r_i, int c_i) { 
         //! Access Contents of List
         /*! 
@@ -94,12 +95,8 @@ class C_Matrix_Sparse{
         return access_val;
         }
 
-    //  i. row and column query and/or vector assignment
-    // std::vector<double>& row(int r_i) {}
-    // std::vector<double>& col(int c_i) {}
-
-    //  ii. row and column scalar assignment
-    void row_NonSparseAssign(int r_i, double val) {
+    //! 2. Row and column scalar assignment: ONLY MODIFIES NON-SPARSE DATA
+    void row_NonSparseAssign(double val, int r_i) {
         //! This function assigns all NON-SPARSE vals in row r_i to be val.
         /*!
         SPARSE VALUES ARE NOT MODIFIED.
@@ -117,7 +114,7 @@ class C_Matrix_Sparse{
         }
     }
     
-    void col_NonSparseAssign(int c_i, double val) {
+    void col_NonSparseAssign(double val, int c_i) {
         //! This function assigns all NON-SPARSE vals in col c_i to be val.
         /*!
         SPARSE VALUES ARE NOT MODIFIED.
@@ -141,7 +138,10 @@ class C_Matrix_Sparse{
         }
     }
 
-    void add_elem(int r_i, int c_i, double val) {
+    //! 3. Slice MODIFICATION Operations --> NO VALUE RETURNED
+    //! add(): ADD TO PREVIOUSLY-STORED DATA
+    //!     i. Add element at index
+    void add_elem(double val, int r_i, int c_i) {
         /*!
         This function adds elements to the COO representation of the sparse matrix.
         When this happens, the CSR or CSC representation (if previously calculated) will 
@@ -150,6 +150,9 @@ class C_Matrix_Sparse{
 
         Repeat indices are automatically handled, thanks to the vector-of-lists structure
         used.
+
+        \param r_i vector of row values at which dense matrix should be stored in global sparse matrix
+        \param c_i vector of column values "" "".
 
         DIJ (3-29-22)
         */
@@ -231,22 +234,47 @@ class C_Matrix_Sparse{
         // Update CSR Representation Automatically
         if (active_flag == 2) { convert_to_CSR(); }
     }
+    //!     ii. Add element at slices
+    void add_matr(double mat_val, std::vector<int> r_i, std::vector<int> c_i) {
+        //! Add Dense Matrix at Sliced Locations
+        /*!
+        Stores complete matrix value at (row, pair) locations given by vectors a and b,
+        ADDING to the previously stored value.
 
-    void add_matr(C_Matrix_Dense mat, std::vector<int> row_v, std::vector<int> col_v) {
+        NOTE: Don't use this to zero out values, it will zero them, but it will not remove 
+        them from the sparse matrix.
+
+        \param mat_val Uniform value to be added to each requested position. 
+        \param r_i vector of row values at which dense matrix should be stored in global sparse matrix
+        \param c_i vector of column values "" "".
+
+        DIJ (5-18-22)
+        */
+        for (int ii = 0; ii < r_i.size(); ii++) {
+            for (int jj = 0; jj < c_i.size(); jj++) { add_elem(mat_val, r_i[ii], c_i[jj]); }
+        }
+    }
+    //!     iii. Add matrix at slices
+    void add_matr(C_Matrix_Dense mat, std::vector<int> r_i, std::vector<int> c_i) {
         //! Add Dense Matrix at Sliced Locations
         /*!
         Stores complete matrix mat at (row, pair) locations given by vectors a and b,
         ADDING to the previously stored value.
+
         \param mat Dense matrix to be inserted.
-        \param row_v vector of row values at which dense matrix should be stored in global sparse matrix
-        \param col_v vector of column values "" "".
+        \param r_i vector of row values at which dense matrix should be stored in global sparse matrix
+        \param c_i vector of column values "" "".
+
+        DIJ (5-11-22)
         */
-        for (int ii = 0; ii < row_v.size(); ii++) {
-            for (int jj = 0; jj < col_v.size(); jj++) { add_elem(row_v[ii], col_v[jj], mat(ii,jj)); }
+        for (int ii = 0; ii < r_i.size(); ii++) {
+            for (int jj = 0; jj < c_i.size(); jj++) { add_elem(mat(ii,jj), r_i[ii], c_i[jj]); }
         }
     }
 
-    void set_elem(int r_i, int c_i, double val) {
+    //! set(): OVER-WRITE PREVIOUSLY-STORED DATA
+    //!     i. Set element at index
+    void set_elem(double val, int r_i, int c_i) {
         /*!
         This function sets elements in the COO representation of the sparse matrix,
         OVERWRITING the previously contained value, if present.
@@ -256,6 +284,9 @@ class C_Matrix_Sparse{
 
         Repeat indices are automatically handled, thanks to the vector-of-lists structure
         used.
+
+        \param r_i vector of row values at which dense matrix should be stored in global sparse matrix
+        \param c_i vector of column values "" "".
 
         DIJ (3-29-22)
         */
@@ -337,18 +368,41 @@ class C_Matrix_Sparse{
         // Update CSR Representation Automatically
         if (active_flag == 2) { convert_to_CSR(); }
     }
+    //!     ii. Set element at slices
+    void set_matr(double mat_val, std::vector<int> r_i, std::vector<int> c_i) {
+        //! Set Dense Matrix at Sliced Locations
+        /*!
+        Stores complete matrix value at (row, pair) locations given by vectors a and b,
+        OVERWRITING the previously contained value.
 
-    void set_matr(C_Matrix_Dense mat, std::vector<int> row_v, std::vector<int> col_v) {
+        NOTE: Don't use this to zero out values, it will zero them, but it will not remove 
+        them from the sparse matrix.
+
+        \param mat_val Uniform value to be added to each requested position.
+        \param r_i vector of row values at which dense matrix should be stored in global sparse matrix
+        \param c_i vector of column values "" "".
+
+        DIJ (5-11-22)
+        */
+        for (int ii = 0; ii < r_i.size(); ii++) {
+            for (int jj = 0; jj < c_i.size(); jj++) { set_elem(mat_val, r_i[ii], c_i[jj]); }
+        }
+    }
+    //!     iii. Set matrix at slices
+    void set_matr(C_Matrix_Dense mat, std::vector<int> r_i, std::vector<int> c_i) {
         //! Set Dense Matrix at Sliced Locations
         /*!
         Stores complete matrix mat at (row, pair) locations given by vectors a and b,
         OVERWRITING the previously contained value.
+
         \param mat Dense matrix to be inserted.
-        \param row_v vector of row values at which dense matrix should be stored in global sparse matrix
-        \param col_v vector of column values "" "".
+        \param r_i vector of row values at which dense matrix should be stored in global sparse matrix
+        \param c_i vector of column values "" "".
+
+        DIJ (5-11-22)
         */
-        for (int ii = 0; ii < row_v.size(); ii++) {
-            for (int jj = 0; jj < col_v.size(); jj++) { set_elem(row_v[ii], col_v[jj], mat(ii,jj)); }
+        for (int ii = 0; ii < r_i.size(); ii++) {
+            for (int jj = 0; jj < c_i.size(); jj++) { set_elem(mat(ii,jj), r_i[ii], c_i[jj]); }
         }
     }
 
