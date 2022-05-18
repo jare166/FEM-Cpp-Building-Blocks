@@ -1,8 +1,8 @@
 #ifndef f_SOLVERINTERFACES_H
 #define f_SOLVERINTERFACES_H
 
-#include <eigen-3.4.0/Eigen/Dense>
-#include <eigen-3.4.0/Eigen/Sparse>
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
 
 #include <math.h>
 #include <vector>
