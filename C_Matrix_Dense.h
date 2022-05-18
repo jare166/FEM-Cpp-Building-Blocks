@@ -198,16 +198,53 @@ class C_Matrix_Dense{
         This function adds elements to the dense matrix; operations here are 
         redundant w/ parentheses operator ().
 
+        \param val value which should be stored
+        \param r_i row value at which value should be stored in matrix
+        \param c_i column value at which value should be stored in matrix
+
+        DIJ (5-18-22)
+        */
+
+        int row_1 = (*this).row_size; // first matrix
+        int col_1 = (*this).col_size;
+
+        int ij; 
+
+        // EXCEPTION: Check for out-of-range access
+        check_size_access((*this), r_i, c_i);
+
+        // Determine access index for vector of values
+        if (!(*this).transpose) { ij = r_i*col_1 + c_i; }
+        else                    { ij = c_i*row_1 + r_i; }
+
+        (*this).values[ij] += val;
+    }
+    //!     ii. Add element at slices
+    void add_matr(double mat_val, std::vector<int> r_i, std::vector<int> c_i) {
+        //! Add Dense Matrix at Sliced Locations
+        /*!
+        Stores complete matrix mat at (row, pair) locations given by vectors a and b,
+        ADDING to the previously stored value.
+
+        \param mat_val Dense matrix value to be inserted.
+        \param r_i vector of row values at which dense matrix should be stored in global sparse matrix
+        \param c_i vector of column values "" "".
+
         DIJ (5-18-22)
         */
 
         // EXCEPTION: Check for out-of-range access
-        check_size_access((*this), r_i, c_i);
-        
-        
-    }
-    //!     ii. Add element at slices
-    void set_matr(double mat_val, std::vector<int> r_i, std::vector<int> c_i) {
+        // Checked in sub-function call
+
+        // Initialize Output to Correct Size
+        int num_rows = r_i.size();
+        int num_cols = c_i.size();
+
+        // Determine access index for vector of values
+        for (int ii = 0; ii < num_rows; ii++) {
+            for (int jj = 0; jj < num_cols; jj++) { add_elem(mat_val, r_i[ii], c_i[jj]); }
+        }
+
     }
     //!     iii. Add matrix at slices
     void add_matr(C_Matrix_Dense mat, std::vector<int> r_i, std::vector<int> c_i) {
@@ -224,7 +261,17 @@ class C_Matrix_Dense{
         */
 
         // EXCEPTION: Check for out-of-range access
-        check_size_access((*this), r_i, c_i);
+        // Checked in sub-function call
+
+        // Initialize Output to Correct Size
+        int num_rows = r_i.size();
+        int num_cols = c_i.size();
+
+        // Determine access index for vector of values
+        for (int ii = 0; ii < num_rows; ii++) {
+            for (int jj = 0; jj < num_cols; jj++) { add_elem(mat(ii, jj), r_i[ii], c_i[jj]); }
+        }
+        
     }
     
     //! set(): OVER-WRITE PREVIOUSLY-STORED DATA
@@ -234,14 +281,52 @@ class C_Matrix_Dense{
         This function sets elements in the dense matrix,
         OVERWRITING the previously contained value, if present.
 
-        DIJ (3-29-22)
+        \param val value which should be stored
+        \param r_i row value at which value should be stored in matrix
+        \param c_i column value at which value should be stored in matrix
+
+        DIJ (5-18-22)
         */
+
+        int row_1 = (*this).row_size; // first matrix
+        int col_1 = (*this).col_size;
+
+        int ij; 
 
         // EXCEPTION: Check for out-of-range access
         check_size_access((*this), r_i, c_i);
+
+        // Determine access index for vector of values
+        if (!(*this).transpose) { ij = r_i*col_1 + c_i; }
+        else                    { ij = c_i*row_1 + r_i; }
+
+        (*this).values[ij] = val;
     }
     //!     ii. Set element at slices
     void set_matr(double mat_val, std::vector<int> r_i, std::vector<int> c_i) {
+        //! Set Dense Matrix at Sliced Locations
+        /*!
+        Stores complete matrix mat at (row, pair) locations given by vectors a and b,
+        OVERWRITING the previously contained value.
+
+        \param mat_val Dense matrix value to be inserted.
+        \param r_i vector of row values at which dense matrix should be stored in global sparse matrix
+        \param c_i vector of column values "" "".
+
+        DIJ (5-18-22)
+        */
+        
+        // EXCEPTION: Check for out-of-range access
+        // Checked in sub-function call
+
+        // Initialize Output to Correct Size
+        int num_rows = r_i.size();
+        int num_cols = c_i.size();
+
+        // Determine access index for vector of values
+        for (int ii = 0; ii < num_rows; ii++) {
+            for (int jj = 0; jj < num_cols; jj++) { set_elem(mat_val, r_i[ii], c_i[jj]); }
+        }
 
     }
     //!     iii. Set matrix at slices
@@ -259,7 +344,16 @@ class C_Matrix_Dense{
         */
 
         // EXCEPTION: Check for out-of-range access
-        check_size_access((*this), r_i, c_i);
+        // Checked in sub-function call
+
+        // Initialize Output to Correct Size
+        int num_rows = r_i.size();
+        int num_cols = c_i.size();
+
+        // Determine access index for vector of values
+        for (int ii = 0; ii < num_rows; ii++) {
+            for (int jj = 0; jj < num_cols; jj++) { set_elem(mat(ii, jj), r_i[ii], c_i[jj]); }
+        }
     }
 
 

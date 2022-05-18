@@ -151,8 +151,9 @@ class C_Matrix_Sparse{
         Repeat indices are automatically handled, thanks to the vector-of-lists structure
         used.
 
-        \param r_i vector of row values at which dense matrix should be stored in global sparse matrix
-        \param c_i vector of column values "" "".
+        \param val value which should be stored
+        \param r_i row value at which value should be stored in matrix
+        \param c_i column value at which value should be stored in matrix
 
         DIJ (3-29-22)
         */
@@ -241,8 +242,8 @@ class C_Matrix_Sparse{
         Stores complete matrix value at (row, pair) locations given by vectors a and b,
         ADDING to the previously stored value.
 
-        NOTE: Don't use this to zero out values, it will zero them, but it will not remove 
-        them from the sparse matrix.
+        NOTE: Don't use this to zero out values, it won't
+        It will ADD zero to currently contained elements.
 
         \param mat_val Uniform value to be added to each requested position. 
         \param r_i vector of row values at which dense matrix should be stored in global sparse matrix
@@ -285,8 +286,9 @@ class C_Matrix_Sparse{
         Repeat indices are automatically handled, thanks to the vector-of-lists structure
         used.
 
-        \param r_i vector of row values at which dense matrix should be stored in global sparse matrix
-        \param c_i vector of column values "" "".
+        \param val value which should be stored
+        \param r_i row value at which value should be stored in matrix
+        \param c_i column value at which value should be stored in matrix
 
         DIJ (3-29-22)
         */
@@ -375,8 +377,9 @@ class C_Matrix_Sparse{
         Stores complete matrix value at (row, pair) locations given by vectors a and b,
         OVERWRITING the previously contained value.
 
-        NOTE: Don't use this to zero out values, it will zero them, but it will not remove 
-        them from the sparse matrix.
+        NOTE: Don't use this to zero out values, unless you really have to. (There is probably
+        a better way.)
+        It will zero them, but it will not remove them from the sparse matrix.
 
         \param mat_val Uniform value to be added to each requested position.
         \param r_i vector of row values at which dense matrix should be stored in global sparse matrix
