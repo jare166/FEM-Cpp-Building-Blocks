@@ -74,7 +74,7 @@ class C_Matrix_Sparse{
         */
         // COO       
         // Ensure an element is present at queried location
-        add_elem(r_i, c_i, 0.0); 
+        add_elem(0.0, r_i, c_i); 
 
         // Iterate through list
         std::forward_list<double>::iterator it_v = value_list[r_i].begin();
