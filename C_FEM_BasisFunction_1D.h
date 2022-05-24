@@ -78,7 +78,7 @@ class C_LagrangeBasis{
                 sp(ii,1) = 0.5*(1+x);
 
                 dsp(ii,0) =-0.5;
-                dsp(ii,0) = 0.5;
+                dsp(ii,1) = 0.5;
             }
         }
         else {
