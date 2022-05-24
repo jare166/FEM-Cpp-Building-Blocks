@@ -9,7 +9,9 @@ template <typename T> std::vector<T> linspace  (int num_in, T start_in, T end_in
 std::vector<int>                     intspace  (int start_in, int end_in);
 template <typename T> int            signum    (T x);
 template <typename T> double         Heaviside (T x);
-
+template <typename T> double         norm      (T x, T y);
+template <typename T> double         norm      (T x, T y, T z);
+template <typename T> double         norm      (std::vector<T> x_v);
 
 // i. Special Vector Initializations
 template <typename T> std::vector<T> linspace(int num_in, T start_in, T end_in)
@@ -60,6 +62,24 @@ template <typename T> int signum(T x) {
 template <typename T> double Heaviside (T x) {
     if (x < T(0)) { return T(0); }
     else          { return x;    }
+}
+
+template <typename T> double norm (T x, T y) {
+    return sqrt( pow(x,2) + pow(y,2) );
+}
+
+template <typename T> double norm (T x, T y, T z) {
+    return sqrt( pow(x,2) + pow(y,2) + pow(z,2) );
+}
+
+template <typename T> double norm (std::vector<T> x_v) {
+    T x_sum = T(0);
+
+    for (int ii = 0; ii < x_v.size(); ii++) {
+        x_sum += pow(x_v, 2);
+    }
+
+    return sqrt(x_sum);
 }
 
 #endif
