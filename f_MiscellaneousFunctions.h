@@ -5,10 +5,10 @@
 #include <vector>
 
 // Function Declarations
-template <typename T> std::vector<T> linspace(int num_in, T start_in, T end_in);
-std::vector<int> intspace(int start_in, int end_in);
-template <typename T> int signum(T val);
-float Heaviside (int x);
+template <typename T> std::vector<T> linspace  (int num_in, T start_in, T end_in);
+std::vector<int>                     intspace  (int start_in, int end_in);
+template <typename T> int            signum    (T x);
+template <typename T> double         Heaviside (T x);
 
 
 // i. Special Vector Initializations
@@ -53,13 +53,13 @@ std::vector<int> intspace(int start_in, int end_in)
 }
 
 // ii. General Mathematical Functions
-template <typename T> int signum(T val) {
-    return (T(0) < val) - (val < T(0));
+template <typename T> int signum(T x) {
+    return (T(0) < x) - (x < T(0));
 }
 
-float Heaviside (int x) {
-    if (x < 0) { return 0; }
-    else       { return x; }
+template <typename T> double Heaviside (T x) {
+    if (x < T(0)) { return T(0); }
+    else          { return x;    }
 }
 
 #endif
