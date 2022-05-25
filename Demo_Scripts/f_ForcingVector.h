@@ -39,7 +39,6 @@ void stiffnessMatrix_AxialPlusBending_1D(int itEl, C_Mesh_1D mesh, C_Flags flags
     double le = elNodes[1] - elNodes[0];  // Axial Element
 
     // Recompute Hermite Shape Functions
-    C_HermiteBasis feH(flags.interpOrder,  GP_Data, le);
     C_Matrix_Dense dsp_L, sp_H, ddsp_H;
 
     double GJ_d  = (2/le);
@@ -48,13 +47,9 @@ void stiffnessMatrix_AxialPlusBending_1D(int itEl, C_Mesh_1D mesh, C_Flags flags
     for (int itGp = 0; itGp < GP_Data.num_GP; itGp++) {
         // Number of Shape Functions associated w/ basis (for indexing)
         int ns_L = (*feL).num_sp;
-        int ns_H = feH.num_sp;
         
         // Extract Rows at each Gauss Point
         dsp_L = (*feL).dsp(itGp, intspace(0,ns_L));
-
-        sp_H   = feH.sp(itGp, intspace(0,ns_H));
-        ddsp_H = feH.ddsp(itGp, intspace(0,ns_H));
 
         // Transformation to axial element
         dsp_L = GJ_d*dsp_L;
