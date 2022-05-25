@@ -7,11 +7,17 @@
 // Function Declarations
 template <typename T> std::vector<T> linspace  (int num_in, T start_in, T end_in);
 std::vector<int>                     intspace  (int start_in, int end_in);
-template <typename T> int            signum    (T x);
-template <typename T> double         Heaviside (T x);
-template <typename T> double         norm      (T x, T y);
-template <typename T> double         norm      (T x, T y, T z);
-template <typename T> double         norm      (std::vector<T> x_v);
+template <typename T> T     signum    (T x);
+template <typename T> T     Heaviside (T x);
+template <typename T> T     norm      (T x, T y);
+template <typename T> T     norm      (T x, T y, T z);
+template <typename T> T     norm      (std::vector<T> x_v);
+template <typename T> T     min       (T x, T y);
+template <typename T> T     min       (std::vector<T> x_v);
+template <typename T> T     min       (std::vector<T> x_v, int& ind_out);
+template <typename T> T     max       (T x, T y);
+template <typename T> T     max       (std::vector<T> x_v);
+template <typename T> T     max       (std::vector<T> x_v, int& ind_out);
 
 // i. Special Vector Initializations
 template <typename T> std::vector<T> linspace(int num_in, T start_in, T end_in)
@@ -55,24 +61,25 @@ std::vector<int> intspace(int start_in, int end_in)
 }
 
 // ii. General Mathematical Functions
-template <typename T> int signum(T x) {
+template <typename T> T signum(T x) {
     return (T(0) < x) - (x < T(0));
 }
 
-template <typename T> double Heaviside (T x) {
+template <typename T> T Heaviside (T x) {
     if (x < T(0)) { return T(0); }
     else          { return x;    }
 }
 
-template <typename T> double norm (T x, T y) {
+//  COMPUTE VECTOR NORM
+template <typename T> T norm (T x, T y) {
     return sqrt( pow(x,2) + pow(y,2) );
 }
 
-template <typename T> double norm (T x, T y, T z) {
+template <typename T> T norm (T x, T y, T z) {
     return sqrt( pow(x,2) + pow(y,2) + pow(z,2) );
 }
 
-template <typename T> double norm (std::vector<T> x_v) {
+template <typename T> T norm (std::vector<T> x_v) {
     T x_sum = T(0);
 
     for (int ii = 0; ii < x_v.size(); ii++) {
@@ -80,6 +87,50 @@ template <typename T> double norm (std::vector<T> x_v) {
     }
 
     return sqrt(x_sum);
+}
+
+//  COMPUTE MINIMA
+template <typename T> T min (T x, T y) {
+    return x<y ? x : y;
+}
+//      ii. Test variable number of input values
+template <typename T> T min (std::vector<T> x_v) {
+    T x_out = x_v[0];
+
+    for (int ii = 1; ii < x_v.size(); ii++) { x_out = min(x_out, x[ii]); }
+
+    return x_out;
+}
+//      iii. Return indices also
+template <typename T> T min (std::vector<T> x_v, int& ind_out) {
+    T x_out = x_v[0];
+
+    for (int ii = 1; ii < x_v.size(); ii++) { x_out = min(x_out, x[ii]); }
+    ind_out = ii;
+
+    return x_out;
+}
+
+//  COMPUTE MAXIMA
+template <typename T> T max (T x, T y) {
+    return x>y ? x : y;
+}
+//      ii. Test variable number of input values
+template <typename T> T max (std::vector<T> x_v) {
+    T x_out = x_v[0];
+
+    for (int ii = 1; ii < x_v.size(); ii++) { x_out = max(x_out, x[ii]); }
+
+    return x_out
+}
+//      iii. Return indices also
+template <typename T> T max (std::vector<T> x_v, int& ind_out) {
+    T x_out = x_v[0];
+
+    for (int ii = 1; ii < x_v.size(); ii++) { x_out = max(x_out, x[ii]); }
+    ind_out = ii;
+
+    return x_out
 }
 
 #endif
