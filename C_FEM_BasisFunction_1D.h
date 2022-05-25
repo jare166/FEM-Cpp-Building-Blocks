@@ -47,6 +47,10 @@ class C_HermiteBasis{
             ddsp(ii,3) = (1/le)*(3*x+1);
         }
     }
+
+    void local_shape_function () {
+
+    }
 };
 
 
