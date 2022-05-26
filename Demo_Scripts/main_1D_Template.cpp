@@ -35,7 +35,7 @@ int main()
     kGlobal.col_NonSparseAssign(0.0, bcDof);
     kGlobal.row_NonSparseAssign(0.0, bcDof);
     kGlobal(bcDof,bcDof) = 1;
-    fGlobal(bcDof) = 1.0; 
+    fGlobal(bcDof) = 0.0; 
 
     
     // 5. Solve, using Cholesky Factorization of kGlob
@@ -46,6 +46,7 @@ int main()
     chol.compute(kG_eigen);  
     Eigen::VectorXd sol = chol.solve(fGlobal);
     std::cout << sol;
+    std::cout << "\n";
 
     return 0;
 }
