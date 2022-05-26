@@ -97,7 +97,10 @@ template <typename T> T min (T x, T y) {
 template <typename T> T min (std::vector<T> x_v) {
     T x_out = x_v[0];
 
-    for (int ii = 1; ii < x_v.size(); ii++) { x_out = min(x_out, x[ii]); }
+    for (int ii = 1; ii < x_v.size(); ii++) 
+    { 
+        x_out = min(x_out, x_v[ii]); 
+    }
 
     return x_out;
 }
@@ -105,8 +108,12 @@ template <typename T> T min (std::vector<T> x_v) {
 template <typename T> T min (std::vector<T> x_v, int& ind_out) {
     T x_out = x_v[0];
 
-    for (int ii = 1; ii < x_v.size(); ii++) { x_out = min(x_out, x[ii]); }
-    ind_out = ii;
+    for (int ii = 1; ii < x_v.size(); ii++) 
+    { 
+        x_out = min(x_out, x_v[ii]); 
+        ind_out = ii;
+    }
+    
 
     return x_out;
 }
@@ -119,18 +126,24 @@ template <typename T> T max (T x, T y) {
 template <typename T> T max (std::vector<T> x_v) {
     T x_out = x_v[0];
 
-    for (int ii = 1; ii < x_v.size(); ii++) { x_out = max(x_out, x[ii]); }
-
-    return x_out
+    for (int ii = 1; ii < x_v.size(); ii++) 
+    { 
+        x_out = max(x_out, x_v[ii]); 
+    }
+    return x_out;
 }
 //      iii. Return indices also
 template <typename T> T max (std::vector<T> x_v, int& ind_out) {
     T x_out = x_v[0];
 
-    for (int ii = 1; ii < x_v.size(); ii++) { x_out = max(x_out, x[ii]); }
-    ind_out = ii;
+    for (int ii = 1; ii < x_v.size(); ii++) 
+    { 
+        x_out = max(x_out, x_v[ii]); 
+        ind_out = ii;
+    }
+    
 
-    return x_out
+    return x_out;
 }
 
 #endif
