@@ -5,12 +5,12 @@
 #include <iostream>
 #include <tuple>
 
-#include "C_FEM_BasisFunction_1D.h"
-#include "C_FEM_GaussPoint_1D.h" 
-#include "C_Mesh_1D.h"
-#include "C_Matrix_Dense.h"
+#include "../C_FEM_BasisFunction_1D.h"
+#include "../C_FEM_GaussPoint_1D.h" 
+#include "../C_Mesh_1D.h"
+#include "../C_Matrix_Dense.h"
 
-#include "f_MiscellaneousFunctions.h"
+#include "../f_MiscellaneousFunctions.h"
 
 //! Construct/Assemble 1D Axial Stiffness Matrix
 /*!
