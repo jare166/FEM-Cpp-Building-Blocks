@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <forward_list>
 
-#include "C_Matrix_Sparse.h"
+#include "../C_Matrix_Sparse.h"
 
 void convert_to_Eigen(C_Matrix_Sparse& kG, Eigen::SparseMatrix<double>& kG_eigen) {
     /*!

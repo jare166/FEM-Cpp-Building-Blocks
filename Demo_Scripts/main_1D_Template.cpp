@@ -1,14 +1,14 @@
 #include <eigen-3.4.0/Eigen/Dense>  // Linear Solver Libraries
 #include <eigen-3.4.0/Eigen/Sparse>
 
-#include "C_FEM_BasisFunction_1D.h"
-#include "C_FEM_GaussPoint_1D.h" 
-#include "C_Mesh_1D.h"
-#include "C_Matrix_Sparse.h"
-#include "C_Matrix_Dense.h"
+#include "../C_FEM_BasisFunction_1D.h"
+#include "../C_FEM_GaussPoint_1D.h" 
+#include "../C_Mesh_1D.h"
+#include "../C_Matrix_Sparse.h"
+#include "../C_Matrix_Dense.h"
 
 #include "f_ForcingVector.h"
-#include "f_SolverInterfaces.h"
+#include "../Solver_Interfaces/f_SolverInterfaces.h"
 
 
 int main()
