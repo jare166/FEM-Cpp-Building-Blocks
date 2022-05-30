@@ -3,7 +3,7 @@
 
 #include "../C_FEM_BasisFunction_1D.h"
 #include "../C_FEM_GaussPoint_1D.h" 
-#include "../C_Mesh_1D.h"
+#include "../C_Mesh_Frame.h"
 #include "../C_Matrix_Sparse.h"
 #include "../C_Matrix_Dense.h"
 
@@ -15,7 +15,7 @@ int main()
 {
     C_Material mat;
     C_GaussPoint_1D GP_Data(2);
-    C_Mesh_1D       mesh(10.0, 11);
+    C_Mesh_Frame    mesh(10.0, 11);
     C_LagrangeBasis feL(1, GP_Data);
     int totDof=mesh.num_Nd;
     C_Matrix_Sparse kGlobal;
