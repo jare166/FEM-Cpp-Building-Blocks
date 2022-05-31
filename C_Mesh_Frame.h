@@ -76,8 +76,8 @@ class C_Mesh_Frame{
         for (int ii = 0; ii < x_CONN.size(); ii++) {
             
             // Start and End Indices
-            jj_S = x_NODE[ii][0];
-            jj_E = x_NODE[ii][1];
+            jj_S = x_CONN[ii][0];
+            jj_E = x_CONN[ii][1];
 
             // Number of Elements in Between Nodal Pair
             N  = x_CONN[ii][2];
@@ -92,7 +92,7 @@ class C_Mesh_Frame{
             x3_E = x_NODE[jj_E][3];
 
             len_elem = norm( (x1_E-x1_S), (x2_E-x2_S), (x3_E-x3_S) );
-            construct_elems({x1_S, x2_S, x3_S}, {x1_E, x2_E, x3_E}, N, 0);
+            construct_elems({x1_S, x2_S, x3_S}, {x1_E, x2_E, x3_E}, N, jj_S);
         }
     }
 
