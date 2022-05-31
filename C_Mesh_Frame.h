@@ -8,18 +8,20 @@
 #include <sstream>
 
 #include "f_MiscellaneousFunctions.h"
+#include "C_Mesh.h"
 
 // DECLARATIONS
 template<typename T> std::vector<T> linspace(int num_in, T start_in, T end_in);
 
 //! This class is used to store data describing a mesh of 1, 2, or 3 dimensions.
-class C_Mesh_Frame{
+class C_Mesh_Frame : public C_Mesh{
     public:
         std::vector< std::vector<double> > nodes;
         std::vector< std::vector<int> >    elements;
-        int num_Nd = 0;
-        int num_El = 0;
-        int dim = 2;
+        int num_NPE = 2; //! Nodes per element
+        int num_Nd  = 0; //! Total number of nodes
+        int num_El  = 0; //! Total number of elements
+        int dim = 2;     //! Dimension of mesh
 
     C_Mesh_Frame() { 
         nodes    = { {0,0}, {1,1} };
