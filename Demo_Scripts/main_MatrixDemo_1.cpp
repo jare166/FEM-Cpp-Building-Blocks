@@ -146,5 +146,26 @@ int main()
     std::cout << A1;
     std::cout << Z2;
 
+    // 6. Assign to Non-Initialized Sparse Matrix
+    C_Matrix_Sparse Z3;
+    C_Matrix_Sparse Z4;
+
+    std::cout << "\n Assignment to Sparse Matrix, 3: \n";
+    Z3.add_matr(A1, c, d);
+    std::cout << Z3;
+
+    std::cout << "\n Assignment to Sparse Matrix, 4: \n";
+    Z4.add_matr(A1, e, f);
+    std::cout << Z4;
+
+    // 7. Sachin Tests
+    double c_double = 5;
+
+    C_Matrix_Dense K1 = (C2 + c_double*(B.T()*B)); // Giving expected result
+    C_Matrix_Dense K2 =  C2 + c_double*B.T()*B;    // This statement was not giving expected result
+
+    std::cout << K1;
+    std::cout << K2;
+
     return 0;
 }
