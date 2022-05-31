@@ -21,12 +21,7 @@ class C_Mesh_Frame{
         int num_El = 0;
         int dim = 2;
 
-    C_Mesh_Frame(int num_Nd_in, int dim_in){
-        num_Nd = num_Nd_in;
-        num_El = num_Nd-1;
-
-        dim = dim_in;
-    }
+    C_Mesh_Frame(int dim_in){ dim = dim_in; }
 
     C_Mesh_Frame(double l, int num_Nd_in){
         // 1D Default Initializer
