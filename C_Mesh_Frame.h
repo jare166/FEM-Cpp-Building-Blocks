@@ -21,6 +21,15 @@ class C_Mesh_Frame{
         int num_El = 0;
         int dim = 2;
 
+    C_Mesh_Frame() { 
+        nodes    = { {0,0}, {1,1} };
+        elements = { {0,1} };
+
+        num_Nd = 2;
+        num_El = num_Nd - 1;
+        dim = 2;
+    }
+
     C_Mesh_Frame(int dim_in){ dim = dim_in; }
 
     C_Mesh_Frame(double l, int num_Nd_in){
