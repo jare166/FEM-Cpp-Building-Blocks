@@ -106,9 +106,12 @@ class C_Mesh_Frame{
         int    num_elem;
 
         // Get number of lines: NODAL FILE
+        std::getline(fID_1, line);
         std::stringstream str_1(line);
+
         std::getline(str_1, word, ',');
         str_1 >> num_elem;
+
         // Assign nodal storage vectors
         std::vector< std::vector<double> >  x_NODE( num_elem, std::vector<double>(4, 0.0) );
         //  Details: vector of num_elem, 4-column vectors, each w/ default value of 0.0.
@@ -132,22 +135,25 @@ class C_Mesh_Frame{
 
             // Exit if requested number of lines has been read
             iter_read++;
-            if (iter_read == (num_elem-1)) { break; }
+            if (iter_read == (num_elem)) { break; }
         }
         fID_1.close();
 
 
         // II. READ CONNECTIVITY FILE
         std::fstream fID_2;
-        fID_2.open(filePath_node);
+        fID_2.open(filePath_conn);
 
         // Get number of lines: CONNECTIVITY FILE
+        std::getline(fID_2, line);
         std::stringstream str_2(line);
+
         std::getline(str_2, word, ',');
         str_2 >> num_elem;
+
         // Assign nodal storage vectors
-        std::vector< std::vector<double> >  x_CONN( num_elem, std::vector<double>(4, 0.0) );
-        //  Details: vector of num_elem, 4-column vectors, each w/ default value of 0.0.
+        std::vector< std::vector<double> >  x_CONN( num_elem, std::vector<double>(3, 0.0) );
+        //  Details: vector of num_elem, 3-column vectors, each w/ default value of 0.0.
 
         // Read Successive Lines for Data
         iter_read = 0;
@@ -166,7 +172,7 @@ class C_Mesh_Frame{
 
             // Exit if requested number of lines has been read
             iter_read++;
-            if (iter_read == (num_elem-1)) { break; }
+            if (iter_read == (num_elem)) { break; }
         }
         fID_2.close();
 
