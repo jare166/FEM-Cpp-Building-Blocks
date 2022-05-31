@@ -159,15 +159,15 @@ class C_Matrix_Sparse{
         */
 
         // Update size parameters if expansion occurs
-        if(r_i > row_size) { 
+        if(r_i >= row_size) { 
             // Add elements to vectors of lists
-            for (int ii = 0; ii < (r_i - row_size); ii++) {
+            for (int ii = 0; ii < ((r_i+1) - row_size); ii++) {
                 col_ind_list.push_back(std::forward_list<int>()); 
                 value_list.push_back(std::forward_list<double>()); 
                 }
-            row_size = r_i;                    // i.  ROWS
+            row_size = r_i+1;                     // i.  ROWS
             }
-        if(c_i > col_size) { col_size = c_i; } // ii. COLUMNS
+        if(c_i >= col_size) { col_size = c_i+1; } // ii. COLUMNS
 
 
         // Iterate through list, inserting new (column, value) pair at the correct
@@ -294,15 +294,15 @@ class C_Matrix_Sparse{
         */
 
         // Update size parameters if expansion occurs
-        if(r_i > row_size) { 
+        if(r_i >= row_size) { 
             // Add elements to vectors of lists
-            for (int ii = 0; ii < (r_i - row_size); ii++) {
+            for (int ii = 0; ii < ((r_i+1) - row_size); ii++) {
                 col_ind_list.push_back(std::forward_list<int>()); 
                 value_list.push_back(std::forward_list<double>()); 
                 }
-            row_size = r_i;                    // i.  ROWS
+            row_size = r_i+1;                     // i.  ROWS
             }
-        if(c_i > col_size) { col_size = c_i; } // ii. COLUMNS
+        if(c_i >= col_size) { col_size = c_i+1; } // ii. COLUMNS
 
 
         // Iterate through list, inserting new (column, value) pair at the correct
@@ -420,11 +420,11 @@ class C_Matrix_Sparse{
         active_flag = 2; // CSR Format
 
         value.resize(NNZ,   0); 
-        row_ind.resize(row_size+1, 0); 
+        row_ind.resize(row_size, 0); 
         col_ind.resize(NNZ, 0);
 
         int kk = 0;
-        for (int ii = 0; ii <= row_size; ii++){
+        for (int ii = 0; ii < row_size; ii++){
             std::forward_list<double>::iterator it_v = value_list[ii].begin();
             std::forward_list<int>::iterator    it_c = col_ind_list[ii].begin();
             
@@ -456,7 +456,7 @@ class C_Matrix_Sparse{
             std::cout << "(Row, Column, Value)\n";
 
             // Iterate through list
-            for (int ii = 0; ii <= row_size; ii++) {
+            for (int ii = 0; ii < row_size; ii++) {
                 std::forward_list<double>::iterator it_v = value_list[ii].begin();
                 std::forward_list<int>::iterator    it_c = col_ind_list[ii].begin();
                 
@@ -477,7 +477,7 @@ class C_Matrix_Sparse{
             std::cout <<  row_size << " x " << col_size;
             std::cout << " Sparse Matrix stored in CSR Form\n";
             std::cout << "(Row, Column, Value)\n";
-            for (int ii = 0; ii <= row_size; ii++){
+            for (int ii = 0; ii < row_size; ii++){
                 int row_start = row_ind[ii];
                 int row_end   = row_ind[ii + 1];
 
