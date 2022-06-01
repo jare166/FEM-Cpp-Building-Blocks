@@ -362,16 +362,8 @@ class C_Matrix_Dense{
         // 1. Assignment to Empty Object
         if ( (*this).row_size == -1 ) { 
             // Update Size
-            if (!obj2.transpose) {
-                // i. Input Object not Transposed
-                (*this).row_size = obj2.row_size;
-                (*this).col_size = obj2.col_size;
-            }
-            else {
-                // ii. Input Object Transposed
-                (*this).row_size = obj2.col_size;
-                (*this).col_size = obj2.row_size;
-            }
+            (*this).row_size = obj2.row_size;
+            (*this).col_size = obj2.col_size;
 
             (*this).NNZ = obj2.NNZ;
             (*this).values.resize(NNZ);
@@ -441,9 +433,7 @@ class C_Matrix_Dense{
         for (int ii = 0; ii < ii_M; ii++) {
             for (int jj = 0; jj < jj_M; jj++) {
                 sum=0;
-                for(int kk = 0; kk < kk_M; kk++) {
-                    sum += (*this)(ii,kk)*obj2(kk,jj);
-                }
+                for(int kk = 0; kk < kk_M; kk++) { sum += (*this)(ii,kk)*obj2(kk,jj); }
                 ij = ii*jj_M + jj;
                 obj_out.values[ij] = sum;
             }

@@ -165,19 +165,33 @@ int main()
     C_Matrix_Dense K1 = (C2 + c_double*(B.T()*B)); // Y
     C_Matrix_Dense K2 =  C2 + c_double*B.T()*B;    // Y
 
+    std::cout << "\nSquare Matrices";
     std::cout << K1;
     std::cout << K2;
 
-    //  ii. Non-Square Matrices
-    C_Matrix_Dense K3 = (B1 + c_double*(B2.T()*B2)); // Y
-    C_Matrix_Dense K4 =  B1 + c_double*(B2.T()*B2);  // Y
-    C_Matrix_Dense K5 = (B1 + (c_double*B2.T())*B2);   // N
-    C_Matrix_Dense K6 =  B1 + c_double*B2.T()*B2;    // N
+    //  ii. Non-Square Matrices, No Constant
+    C_Matrix_Dense K3 = B1 + (B2.T()*B2); // Y
+    C_Matrix_Dense K4 = B1 + B2.T()*B2;   // Y
 
+    std::cout << "\nNon-Square Matrices, No Constant";
     std::cout << K3;
     std::cout << K4;
+
+    //  iii. Non-Square Matrices, Post-Multiplied by Constant
+    C_Matrix_Dense K5 = B1 + (B2.T()*B2)*c_double; // Y
+    C_Matrix_Dense K6 = B1 + B2.T()*B2*c_double;   // Y
+
+    std::cout << "\nNon-Square Matrices, Multiplied by Constant";
     std::cout << K5;
     std::cout << K6;
+
+    //  iv. Non-Square Matrices, Post-Multiplied by Constant
+    C_Matrix_Dense K7 = B1 + c_double*(B2.T()*B2); // Y
+    C_Matrix_Dense K8 = B1 + c_double*B2.T()*B2;   // Y
+
+    std::cout << "\nNon-Square Matrices, Multiplied by Constant";
+    std::cout << K7;
+    std::cout << K8;
 
     return 0;
 }
