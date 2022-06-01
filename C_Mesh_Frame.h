@@ -68,7 +68,7 @@ class C_Mesh_Frame : public C_Mesh{
 
         int ii = 0;
         for (ii = 0; ii <= (num_Nd_sub-1); ii++) {
-            elements[ii_s+ii] = {ii, ii+1};
+            elements[ii_s+ii] = {(ii_s+ii), (ii_s+ii+1)};
 
             nodes[ii_s+ii][0] = sp_x[ii]; 
             nodes[ii_s+ii][1] = sp_y[ii]; 
