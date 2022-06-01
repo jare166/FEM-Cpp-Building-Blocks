@@ -105,7 +105,7 @@ class C_Mesh_Frame : public C_Mesh{
             x3_E = x_NODE[jj_E][3];
 
             len_elem = norm( (x1_E-x1_S), (x2_E-x2_S), (x3_E-x3_S) );
-            construct_elems({x1_S, x2_S, x3_S}, {x1_E, x2_E, x3_E}, N, jj_S);
+            construct_elems({x1_S, x2_S, x3_S}, {x1_E, x2_E, x3_E}, N+1, jj_S);
         }
     }
 
