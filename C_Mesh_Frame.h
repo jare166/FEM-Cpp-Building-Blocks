@@ -114,18 +114,19 @@ class C_Mesh_Frame : public C_Mesh{
 
         std::string line, word;
         double temp_val_1, temp_val_2, temp_val_3, temp_val_4;
-        int    num_elem;
+        int num_pr_nodes; // Number of Principal Nodes
+        int num_connect;  // Total Number of Connections
 
         // Get number of lines: NODAL FILE
         std::getline(fID_1, line);
         std::stringstream str_1(line);
 
         std::getline(str_1, word, ',');
-        str_1 >> num_elem;
+        str_1 >> num_pr_nodes;
 
         // Assign nodal storage vectors
-        std::vector< std::vector<double> >  x_NODE( num_elem, std::vector<double>(4, 0.0) );
-        //  Details: vector of num_elem, 4-column vectors, each w/ default value of 0.0.
+        std::vector< std::vector<double> >  x_NODE( num_pr_nodes, std::vector<double>(4, 0.0) );
+        //  Details: vector of num_pr_nodes, 4-column vectors, each w/ default value of 0.0.
 
         // Read Successive Lines for Data
         int iter_read = 0;
@@ -146,7 +147,7 @@ class C_Mesh_Frame : public C_Mesh{
 
             // Exit if requested number of lines has been read
             iter_read++;
-            if (iter_read == (num_elem)) { break; }
+            if (iter_read == (num_pr_nodes)) { break; }
         }
         fID_1.close();
 
@@ -160,11 +161,11 @@ class C_Mesh_Frame : public C_Mesh{
         std::stringstream str_2(line);
 
         std::getline(str_2, word, ',');
-        str_2 >> num_elem;
+        str_2 >> num_connect;
 
         // Assign nodal storage vectors
-        std::vector< std::vector<double> >  x_CONN( num_elem, std::vector<double>(3, 0.0) );
-        //  Details: vector of num_elem, 3-column vectors, each w/ default value of 0.0.
+        std::vector< std::vector<double> >  x_CONN( num_connect, std::vector<double>(3, 0.0) );
+        //  Details: vector of num_connect, 3-column vectors, each w/ default value of 0.0.
 
         // Read Successive Lines for Data
         iter_read = 0;
@@ -183,7 +184,7 @@ class C_Mesh_Frame : public C_Mesh{
 
             // Exit if requested number of lines has been read
             iter_read++;
-            if (iter_read == (num_elem)) { break; }
+            if (iter_read == (num_connect)) { break; }
         }
         fID_2.close();
 
@@ -192,8 +193,12 @@ class C_Mesh_Frame : public C_Mesh{
 
         // III. POPULATE OBJECT WITH INPUT DATA
         // Determine total number of nodes and resize vectors
-        num_Nd = 0;
-        for (int ii = 0; ii < x_CONN.size(); ii++) { num_Nd += x_CONN[ii][2]; }
+        num_Nd = num_pr_nodes;
+        num_El = 0;
+        for (int ii = 0; ii < num_connect; ii++) { 
+            num_Nd += (x_CONN[ii][2]-1); 
+            num_El +=  x_CONN[ii][2];
+        }
 
         nodes.resize(num_Nd, std::vector<double>(3, 0));
         elements.resize(num_Nd, std::vector<int>(2, 0));
