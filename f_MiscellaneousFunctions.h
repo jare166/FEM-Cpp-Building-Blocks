@@ -83,7 +83,7 @@ template <typename T> T norm (std::vector<T> x_v) {
     T x_sum = T(0);
 
     for (int ii = 0; ii < x_v.size(); ii++) {
-        x_sum += pow(x_v, 2);
+        x_sum += pow(x_v[ii], 2);
     }
 
     return sqrt(x_sum);

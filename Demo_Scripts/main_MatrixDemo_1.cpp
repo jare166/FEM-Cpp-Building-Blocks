@@ -161,11 +161,23 @@ int main()
     // 7. Sachin Tests
     double c_double = 5;
 
-    C_Matrix_Dense K1 = (C2 + c_double*(B.T()*B)); // Giving expected result
-    C_Matrix_Dense K2 =  C2 + c_double*B.T()*B;    // This statement was not giving expected result
+    //  i. Square Matrices
+    C_Matrix_Dense K1 = (C2 + c_double*(B.T()*B)); // Y
+    C_Matrix_Dense K2 =  C2 + c_double*B.T()*B;    // Y
 
     std::cout << K1;
     std::cout << K2;
+
+    //  ii. Non-Square Matrices
+    C_Matrix_Dense K3 = (B1 + c_double*(B2.T()*B2)); // Y
+    C_Matrix_Dense K4 =  B1 + c_double*(B2.T()*B2);  // Y
+    C_Matrix_Dense K5 = (B1 + (c_double*B2.T())*B2);   // N
+    C_Matrix_Dense K6 =  B1 + c_double*B2.T()*B2;    // N
+
+    std::cout << K3;
+    std::cout << K4;
+    std::cout << K5;
+    std::cout << K6;
 
     return 0;
 }
