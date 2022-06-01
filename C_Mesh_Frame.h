@@ -15,6 +15,9 @@ template<typename T> std::vector<T> linspace(int num_in, T start_in, T end_in);
 
 //! This class is used to store data describing a mesh of 1, 2, or 3 dimensions.
 class C_Mesh_Frame : public C_Mesh{
+    /* 
+    INHERITED PROPERTIES:
+    
     public:
         std::vector< std::vector<double> > nodes;
         std::vector< std::vector<int> >    elements;
@@ -22,6 +25,7 @@ class C_Mesh_Frame : public C_Mesh{
         int num_Nd  = 0; //! Total number of nodes
         int num_El  = 0; //! Total number of elements
         int dim = 2;     //! Dimension of mesh
+    */
 
     C_Mesh_Frame() { 
         nodes    = { {0,0}, {1,1} };
