@@ -51,23 +51,54 @@ class C_Mesh_Frame : public C_Mesh{
         nodes.resize(num_Nd, std::vector<double>(3, 0));
         elements.resize(num_Nd, std::vector<int>(2, 0));
 
+        // Format:
+        // x_start = { (x1, y1, z1), Node 1 Number }
+        // x_end   = { (x2, y2, z2), Node 2 Number }
         std::vector<double> x_start = {0, 0, 0};
         std::vector<double> x_end   = {l, 0, 0};
 
-        construct_elems(x_start, x_end, num_Nd, 0);
+        construct_elems(x_start, x_end, {0, 1}, num_Nd, 0);
     }
 
     //! I. ELEMENT CONSTRUCTION
     //!     Construct Individual 1D Element (Multiple sub-elements Between Principle Nodes)
-    void construct_elems(std::vector<double> x_start, std::vector<double> x_end, int num_Nd_sub, int ii_s) {
+    void construct_elems(std::vector<double> x_start, std::vector<double> x_end, std::vector<int> x_num, int num_Nd_sub, int ii_s) {
+        /*!
+        This function constructs 1D elements. They can be used singly or in a space frame.
+
+        INPUT:
+        \param x_start Position and node number of first point used in construction of 1D element.   { (x1, y1, z1) }
+        \param x_end   Position and node number of second point used in construction of 1D element.  { (x2, y2, z2) }
+        \param x_num   Node numbers. {xN1, xN2}
+        \param num_Nd_sub Number of sub-nodes to divide 1D element into.
+        \param ii_s    Location to begin storing in global connectivity, nodal vectors.
+       
+        EXAMPLE:
+        Why are the end node numbers needed?
+        Input: Two principal nodes, 1 and 2, with 3 sub-nodes between them.
+            i.  If principal node numbers not provided
+                Original: 1--2
+                Result:   1--2--3--4--5
+                    1 and 5 are /NEW/ principal node numbers.
+
+            ii. If principal node numbers are provided 
+                Original: 1--2
+                Result:   1--3--4--5--2
+                    Principal nodes can retain their numbers, making BC assignment easier.
+        */
+        
         std::vector<double> sp_x, sp_y, sp_z;
 
         sp_x = linspace(num_Nd_sub, x_start[0], x_end[0]); 
         sp_y = linspace(num_Nd_sub, x_start[1], x_end[1]); 
         sp_z = linspace(num_Nd_sub, x_start[2], x_end[2]); 
 
+        // Principal node numbers
+        int N1_num = x_num[0];
+        int N2_num = x_num[1];
+
         int ii = 0;
-        for (ii = 0; ii <= (num_Nd_sub-1); ii++) {
+        for (ii = 0; ii < num_Nd_sub; ii++) {
             elements[ii_s+ii] = {(ii_s+ii), (ii_s+ii+1)};
 
             nodes[ii_s+ii][0] = sp_x[ii]; 
@@ -113,7 +144,7 @@ class C_Mesh_Frame : public C_Mesh{
             }
 
             len_elem = norm( (x1_E-x1_S), (x2_E-x2_S), (x3_E-x3_S) );
-            construct_elems({x1_S, x2_S, x3_S}, {x1_E, x2_E, x3_E}, N+1, kk_S );
+            construct_elems({x1_S, x2_S, x3_S}, {x1_E, x2_E, x3_E}, {jj_S, jj_E}, N+1, kk_S );
         }
     }
 
