@@ -150,7 +150,7 @@ class C_Mesh_Frame : public C_Mesh{
             std::stringstream str_1(line);
         
             // Read values ( Node, (x, y, z) )
-            std::getline(str_1, word, ','); str_1 >> temp_val_1;
+            str_1 >> temp_val_1;
             std::getline(str_1, word, ','); str_1 >> temp_val_2;
             std::getline(str_1, word, ','); str_1 >> temp_val_3;
             std::getline(str_1, word, ','); str_1 >> temp_val_4;
@@ -189,7 +189,7 @@ class C_Mesh_Frame : public C_Mesh{
             std::stringstream str_2(line);
         
             // Read values ( Node, (x, y, z) )
-            std::getline(str_2, word, ','); str_2 >> temp_val_1;
+            str_2 >> temp_val_1;
             std::getline(str_2, word, ','); str_2 >> temp_val_2;
             std::getline(str_2, word, ','); str_2 >> temp_val_3;
             
