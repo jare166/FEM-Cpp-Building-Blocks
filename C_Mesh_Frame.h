@@ -83,8 +83,9 @@ class C_Mesh_Frame : public C_Mesh{
         double x1_S, x2_S, x3_S; // Start Coordinates
         double x1_E, x2_E, x3_E; // End Coordinates
 
-        int    jj_S, jj_E; // Start and End Indices, Per Nodal Pair
-        int    N;          // Number of Elements, Per Nodal Pair
+        int jj_S, jj_E; // Start and End PRINCIPAL Indices, Per Nodal Pair
+        int kk_S;       // Start local index
+        int N;          // Number of Elements, Per Nodal Pair
 
         for (int ii = 0; ii < x_CONN.size(); ii++) {
             
@@ -104,8 +105,15 @@ class C_Mesh_Frame : public C_Mesh{
             x2_E = x_NODE[jj_E][2];
             x3_E = x_NODE[jj_E][3];
 
+            // Calculate Local Insertion Index
+            kk_S = jj_S;
+            if (ii > 0) { 
+                // Loop Through Previous Indices
+                for (int kk = ii-1; kk >= 0; kk--) {kk_S += (x_CONN[kk][2]-1); }
+            }
+
             len_elem = norm( (x1_E-x1_S), (x2_E-x2_S), (x3_E-x3_S) );
-            construct_elems({x1_S, x2_S, x3_S}, {x1_E, x2_E, x3_E}, N+1, jj_S);
+            construct_elems({x1_S, x2_S, x3_S}, {x1_E, x2_E, x3_E}, N+1, kk_S );
         }
     }
 
