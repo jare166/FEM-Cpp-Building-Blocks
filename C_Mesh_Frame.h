@@ -57,12 +57,15 @@ class C_Mesh_Frame : public C_Mesh{
         std::vector<double> x_start = {0, 0, 0};
         std::vector<double> x_end   = {l, 0, 0};
 
-        construct_elems(x_start, x_end, {0, 1}, num_Nd, 0);
+        int kk_NODE = 0;
+        int kk_CONN = 0;
+
+        construct_elems(x_start, x_end, {0, 1}, num_Nd, kk_NODE, kk_CONN);
     }
 
     //! I. ELEMENT CONSTRUCTION
     //!     Construct Individual 1D Element (Multiple sub-elements Between Principle Nodes)
-    void construct_elems(std::vector<double> x_start, std::vector<double> x_end, std::vector<int> x_num, int num_Nd_sub, int ii_s) {
+    void construct_elems(std::vector<double> x_start, std::vector<double> x_end, std::vector<int> x_num, int num_Nd_sub, int& kk_NODE, int& kk_CONN) {
         /*!
         This function constructs 1D elements. They can be used singly or in a space frame.
 
@@ -71,7 +74,8 @@ class C_Mesh_Frame : public C_Mesh{
         \param x_end   Position and node number of second point used in construction of 1D element.  { (x2, y2, z2) }
         \param x_num   Node numbers. {xN1, xN2}
         \param num_Nd_sub Number of sub-nodes to divide 1D element into.
-        \param ii_s    Location to begin storing in global connectivity, nodal vectors.
+        \param kk_NODE    Location to begin storing in global nodal vectors.
+        \param kk_CONN    Location to begin storing in global connectivity vectors.
        
         EXAMPLE:
         Why are the end node numbers needed?
@@ -89,21 +93,44 @@ class C_Mesh_Frame : public C_Mesh{
         
         std::vector<double> sp_x, sp_y, sp_z;
 
-        sp_x = linspace(num_Nd_sub, x_start[0], x_end[0]); 
-        sp_y = linspace(num_Nd_sub, x_start[1], x_end[1]); 
-        sp_z = linspace(num_Nd_sub, x_start[2], x_end[2]); 
+        sp_x = linspace(num_Nd_sub+1, x_start[0], x_end[0]); 
+        sp_y = linspace(num_Nd_sub+1, x_start[1], x_end[1]); 
+        sp_z = linspace(num_Nd_sub+1, x_start[2], x_end[2]); 
 
         // Principal node numbers
         int N1_num = x_num[0];
         int N2_num = x_num[1];
 
-        int ii = 0;
-        for (ii = 0; ii < num_Nd_sub; ii++) {
-            elements[ii_s+ii] = {(ii_s+ii), (ii_s+ii+1)};
+        int jj = 0;
+        if (num_Nd_sub == 1) {
+            // i. Single Element: No additional nodes (other than principal nodes) added
+            elements[kk_CONN] = {N1_num, N2_num};
+            kk_CONN++;  
+        }
+        else {
+            // ii. Multiple Interior Elements: Additional nodes added
+            for (int ii = 0; ii < num_Nd_sub; ii++) {
+                if      (ii == 0)              { elements[kk_CONN] = {N1_num, kk_NODE}; }
+                else if (ii == (num_Nd_sub-1)) { 
+                    elements[kk_CONN] = {kk_NODE, N2_num};    
 
-            nodes[ii_s+ii][0] = sp_x[ii]; 
-            nodes[ii_s+ii][1] = sp_y[ii]; 
-            nodes[ii_s+ii][2] = sp_z[ii]; 
+                    // Store interior nodes
+                    nodes[kk_NODE][0] = sp_x[ii]; 
+                    nodes[kk_NODE][1] = sp_y[ii]; 
+                    nodes[kk_NODE][2] = sp_z[ii]; 
+                    kk_NODE++;  
+                }
+                else { 
+                    elements[kk_CONN] = {kk_NODE, (kk_NODE+1)}; 
+
+                    // Store interior nodes
+                    nodes[kk_NODE][0] = sp_x[ii]; 
+                    nodes[kk_NODE][1] = sp_y[ii]; 
+                    nodes[kk_NODE][2] = sp_z[ii]; 
+                    kk_NODE++;
+                }
+                kk_CONN++;
+            }
         }
 
     }
@@ -114,10 +141,20 @@ class C_Mesh_Frame : public C_Mesh{
         double x1_S, x2_S, x3_S; // Start Coordinates
         double x1_E, x2_E, x3_E; // End Coordinates
 
-        int jj_S, jj_E; // Start and End PRINCIPAL Indices, Per Nodal Pair
-        int kk_S;       // Start local index
-        int N;          // Number of Elements, Per Nodal Pair
+        int jj_S, jj_E;       // Start and End PRINCIPAL Indices, Per Nodal Pair
+        int kk_NODE, kk_CONN; // Start local STORAGE indices
+        int N;                // Number of Elements, Per Nodal Pair
 
+        // Store Principal Nodes
+        kk_NODE = x_NODE.size();
+        kk_CONN = 0;
+        for (int ii = 0; ii < kk_NODE; ii++) {
+            nodes[ii][0] = x_NODE[ii][1]; 
+            nodes[ii][1] = x_NODE[ii][2]; 
+            nodes[ii][2] = x_NODE[ii][3]; 
+        }
+
+        // Store Interior Nodes and Connectivity
         for (int ii = 0; ii < x_CONN.size(); ii++) {
             
             // Start and End Indices
@@ -136,15 +173,8 @@ class C_Mesh_Frame : public C_Mesh{
             x2_E = x_NODE[jj_E][2];
             x3_E = x_NODE[jj_E][3];
 
-            // Calculate Local Insertion Index
-            kk_S = jj_S;
-            if (ii > 0) { 
-                // Loop Through Previous Indices
-                for (int kk = ii-1; kk >= 0; kk--) {kk_S += (x_CONN[kk][2]-1); }
-            }
-
             len_elem = norm( (x1_E-x1_S), (x2_E-x2_S), (x3_E-x3_S) );
-            construct_elems({x1_S, x2_S, x3_S}, {x1_E, x2_E, x3_E}, {jj_S, jj_E}, N+1, kk_S );
+            construct_elems( {x1_S, x2_S, x3_S}, {x1_E, x2_E, x3_E}, {jj_S, jj_E}, N, kk_NODE, kk_CONN );
         }
     }
 
