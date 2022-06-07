@@ -60,21 +60,21 @@ class C_Mesh_Frame : public C_Mesh{
         int kk_NODE = 0;
         int kk_CONN = 0;
 
-        construct_elems(x_start, x_end, {0, 1}, num_Nd, kk_NODE, kk_CONN);
+        construct_elems(x_start, x_end, {0, 1}, num_El, kk_NODE, kk_CONN);
     }
 
     //! I. ELEMENT CONSTRUCTION
     //!     Construct Individual 1D Element (Multiple sub-elements Between Principle Nodes)
-    void construct_elems(std::vector<double> x_start, std::vector<double> x_end, std::vector<int> x_num, int num_Nd_sub, int& kk_NODE, int& kk_CONN) {
+    void construct_elems(std::vector<double> x_start, std::vector<double> x_end, std::vector<int> x_num, int num_El_sub, int& kk_NODE, int& kk_CONN) {
         /*!
         This function constructs 1D elements. They can be used singly or in a space frame.
 
         INPUT:
-        \param x_start Position and node number of first point used in construction of 1D element.   { (x1, y1, z1) }
-        \param x_end   Position and node number of second point used in construction of 1D element.  { (x2, y2, z2) }
-        \param x_num   Node numbers. {xN1, xN2}
-        \param num_Nd_sub Number of sub-nodes to divide 1D element into.
-        \param kk_NODE    Location to begin storing in global nodal vectors.
+        \param x_start    Position and node number of first point used in construction of 1D element.   { (x1, y1, z1) }
+        \param x_end      Position and node number of second point used in construction of 1D element.  { (x2, y2, z2) }
+        \param x_num      Node numbers. {xN1, xN2}
+        \param num_El_sub Number of elements to divide 1D section into.
+        \param kk_NODE    Location to begin storing in global nodal vectors; note that this will also be the first new member for connectivity.
         \param kk_CONN    Location to begin storing in global connectivity vectors.
        
         EXAMPLE:
@@ -93,37 +93,44 @@ class C_Mesh_Frame : public C_Mesh{
         
         std::vector<double> sp_x, sp_y, sp_z;
 
-        sp_x = linspace(num_Nd_sub+1, x_start[0], x_end[0]); 
-        sp_y = linspace(num_Nd_sub+1, x_start[1], x_end[1]); 
-        sp_z = linspace(num_Nd_sub+1, x_start[2], x_end[2]); 
+        sp_x = linspace(num_El_sub+1, x_start[0], x_end[0]); 
+        sp_y = linspace(num_El_sub+1, x_start[1], x_end[1]); 
+        sp_z = linspace(num_El_sub+1, x_start[2], x_end[2]); 
 
         // Principal node numbers
         int N1_num = x_num[0];
         int N2_num = x_num[1];
 
         int jj = 0;
-        if (num_Nd_sub == 1) {
-            // i. Single Element: No additional nodes (other than principal nodes) added
+        if (num_El_sub == 1) {
+            // 1. Single Element: No additional nodes (other than principal nodes) added
             elements[kk_CONN] = {N1_num, N2_num};
             kk_CONN++;  
         }
         else {
-            // ii. Multiple Interior Elements: Additional nodes added
-            for (int ii = 0; ii < num_Nd_sub; ii++) {
-                if      (ii == 0)              { elements[kk_CONN] = {N1_num, kk_NODE}; }
-                else if (ii == (num_Nd_sub-1)) { 
+            // 2. Multiple Interior Elements: Additional nodes added
+            // NOTE: For each step, the first node in a segment is stored. Thus, in the 
+            // case that the first node is a principal node, no new node is stored.
+            for (int ii = 0; ii < num_El_sub; ii++) {
+                if (ii == 0) { 
+                    // i. Store Connectivity w/ First Principal Node
+                    elements[kk_CONN] = {N1_num, kk_NODE}; 
+                    }
+                else if (ii == (num_El_sub-1)) { 
+                    // ii. Store Connectivity w/ Second Principal Node
                     elements[kk_CONN] = {kk_NODE, N2_num};    
 
-                    // Store interior nodes
+                    // Store FINAL Interior Node
                     nodes[kk_NODE][0] = sp_x[ii]; 
                     nodes[kk_NODE][1] = sp_y[ii]; 
                     nodes[kk_NODE][2] = sp_z[ii]; 
                     kk_NODE++;  
                 }
                 else { 
+                    // iii. Interior Connectivity; No Principal Nodes Involved
                     elements[kk_CONN] = {kk_NODE, (kk_NODE+1)}; 
 
-                    // Store interior nodes
+                    // Store Interior Node
                     nodes[kk_NODE][0] = sp_x[ii]; 
                     nodes[kk_NODE][1] = sp_y[ii]; 
                     nodes[kk_NODE][2] = sp_z[ii]; 
@@ -162,7 +169,7 @@ class C_Mesh_Frame : public C_Mesh{
             jj_E = x_CONN[ii][1];
 
             // Number of Elements in Between Nodal Pair
-            N  = x_CONN[ii][2];
+            N = x_CONN[ii][2];
 
             // Start and End Coordinates
             x1_S = x_NODE[jj_S][1];
@@ -173,7 +180,6 @@ class C_Mesh_Frame : public C_Mesh{
             x2_E = x_NODE[jj_E][2];
             x3_E = x_NODE[jj_E][3];
 
-            len_elem = norm( (x1_E-x1_S), (x2_E-x2_S), (x3_E-x3_S) );
             construct_elems( {x1_S, x2_S, x3_S}, {x1_E, x2_E, x3_E}, {jj_S, jj_E}, N, kk_NODE, kk_CONN );
         }
     }
