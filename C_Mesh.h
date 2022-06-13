@@ -26,7 +26,7 @@ class C_Mesh{
 
     void write_connectivity(std::string filePath) {
         std::fstream fID;
-        fID.open(filePath);
+        fID.open(filePath, std::fstream::out);
 
         // i. List Number of Lines
         fID << "num_lines," << num_El << "\n";
@@ -39,7 +39,7 @@ class C_Mesh{
 
     void write_nodes(std::string filePath) {
         std::fstream fID;
-        fID.open(filePath);
+        fID.open(filePath, std::fstream::out);
 
         // i. List Number of Lines
         fID << "num_lines," << num_Nd << "\n";
