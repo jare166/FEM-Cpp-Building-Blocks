@@ -114,7 +114,6 @@ template <typename T> T min (std::vector<T> x_v, int& ind_out) {
         ind_out = ii;
     }
     
-
     return x_out;
 }
 
@@ -142,7 +141,6 @@ template <typename T> T max (std::vector<T> x_v, int& ind_out) {
         ind_out = ii;
     }
     
-
     return x_out;
 }
 
