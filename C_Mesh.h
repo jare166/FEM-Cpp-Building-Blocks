@@ -3,9 +3,9 @@
 
 #include <math.h>
 #include <vector>
-#include <iostream>
-#include <fstream>
-#include <sstream>
+#include <iostream> // Read/Write to terminal
+#include <fstream>  // Read/Write to file
+#include <sstream>  // Read/Write from string
 
 #include "f_MiscellaneousFunctions.h"
 
@@ -23,6 +23,38 @@ class C_Mesh{
         int dim = 2;     //! Dimension of mesh
 
     C_Mesh() { }
+
+    void write_connectivity(std::string filePath) {
+        std::fstream fID;
+        fID.open(filePath);
+
+        // i. List Number of Lines
+        fID << "num_lines," << num_El << "\n";
+
+        // ii. List Connectivity
+        for (int ii = 0; ii < num_El; ii++) {  fID << elements[ii][0] << "," << elements[ii][1] << "\n"; }
+
+        fID.close();
+    }
+
+    void write_nodes(std::string filePath) {
+        std::fstream fID;
+        fID.open(filePath);
+
+        // i. List Number of Lines
+        fID << "num_lines," << num_Nd << "\n";
+
+        for (int ii = 0; ii < num_Nd; ii++) { 
+            // ii. List Node Number
+            fID << ii << ", ";
+
+            // iii. List Nodes
+            for (int jj = 0; jj < dim; jj++) { fID << nodes[ii][jj] << ","; } 
+            fID << "\n";
+        }
+
+        fID.close();
+    }
 };
 
 #endif
