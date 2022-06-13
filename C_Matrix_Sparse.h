@@ -48,9 +48,20 @@ class C_Matrix_Sparse{
         int active_flag = 1; //! Active data format; 1: COO, 2: CSR, 3: CSC
 
     // I. Constructor
-    C_Matrix_Sparse(){}
+    C_Matrix_Sparse(int row_size_in) {
+        // Only row size known in advance
+        row_size = row_size_in;
+        NNZ = 0;
+
+        // Add elements to vectors of lists
+        for (int ii = 0; ii < row_size; ii++) {
+            col_ind_list.push_back(std::forward_list<int>()); 
+            value_list.push_back(std::forward_list<double>()); 
+        }
+    }
 
     C_Matrix_Sparse(int row_size_in, int col_size_in) {
+        // Row and column size known in advance
         row_size = row_size_in;
         col_size = col_size_in;
         NNZ = 0;
