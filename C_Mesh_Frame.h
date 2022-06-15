@@ -283,7 +283,7 @@ class C_Mesh_Frame : public C_Mesh{
         }
 
         nodes.resize(num_Nd, std::vector<double>(3, 0));
-        elements.resize(num_Nd, std::vector<int>(2, 0));
+        elements.resize(num_El, std::vector<int>(2, 0));
 
         // Add Data to Global Mesh Objects
         construct_frame(x_NODE, x_CONN);
