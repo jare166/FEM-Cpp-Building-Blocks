@@ -4,6 +4,9 @@
 #include <math.h>
 #include <vector>
 
+#include <sys/types.h> // Used to check for existence of files and
+#include <sys/stat.h>  // directories.
+
 // Function Declarations
 template <typename T> std::vector<T> linspace  (int num_in, T start_in, T end_in);
 std::vector<int>                     intspace  (int start_in, int end_in);
@@ -18,6 +21,8 @@ template <typename T> T     min       (std::vector<T> x_v, int& ind_out);
 template <typename T> T     max       (T x, T y);
 template <typename T> T     max       (std::vector<T> x_v);
 template <typename T> T     max       (std::vector<T> x_v, int& ind_out);
+bool fold_exists(std::string folder_path);
+bool file_exists(std::string file_path);
 
 // i. Special Vector Initializations
 template <typename T> std::vector<T> linspace(int num_in, T start_in, T end_in)
@@ -59,6 +64,7 @@ std::vector<int> intspace(int start_in, int end_in)
 
     return intspaced;
 }
+
 
 // ii. General Mathematical Functions
 template <typename T> T signum(T x) {
@@ -142,6 +148,38 @@ template <typename T> T max (std::vector<T> x_v, int& ind_out) {
     }
     
     return x_out;
+}
+
+
+// iii. File/Folder Management
+bool fold_exists(std::string folder_path){
+    /*!
+    Checks for existence of directory at location specified 
+    by the string folder_path
+    
+    Based on Stack Overflow Code.
+    Credit: ivy
+    */
+    struct stat info;
+
+    if (stat( folder_path.c_str(), &info ) != 0) { return false; }
+    else if (info.st_mode & S_IFDIR)             { return true;  }
+    else                                         { return false; }
+}
+
+bool file_exists(std::string file_path) {
+    /*!
+    Checks for existence of file at location specified by the string
+    file_path.
+
+    Based on Stack Overflow Code.
+    Credit: PherricOxide
+    */
+    if (FILE *file = fopen(file_path.c_str(), "r")) {
+        fclose(file);
+        return true;
+    } 
+    else { return false; }   
 }
 
 #endif
