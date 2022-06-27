@@ -160,7 +160,9 @@ class C_Mesh_Frame : public C_Mesh{
         dim = 1;
 
         nodes.resize(num_Nd, std::vector<double>(3, 0));
-        elements.resize(num_Nd, std::vector<int>(2, 0));
+        elements.resize(num_El, std::vector<int>(2, 0));
+
+        nodes[1] = {l, 0, 0}; // Store second principal node
 
         // Format:
         // x_start = { (x1, y1, z1), Node 1 Number }
