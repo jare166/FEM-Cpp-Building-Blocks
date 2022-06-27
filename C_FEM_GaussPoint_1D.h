@@ -2,8 +2,6 @@
 #define C_FEM_GAUSSPOINT_1D_H
 
 #include <vector>
-#include <math.h>
-#include <iostream>
 
 class C_GaussPoint_1D{
     public:

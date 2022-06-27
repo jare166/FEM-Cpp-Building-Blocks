@@ -1,10 +1,8 @@
 #ifndef C_FEM_BASISFUNCTION_1D_H
 #define C_FEM_BASISFUNCTION_1D_H
 
-#include <vector>
 #include <math.h>
 #include <iostream>
-#include <tuple>
 
 #include "C_FEM_GaussPoint_1D.h" 
 #include "C_Matrix_Dense.h"
