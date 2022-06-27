@@ -168,7 +168,7 @@ class C_Mesh_Frame : public C_Mesh{
         std::vector<double> x_start = {0, 0, 0};
         std::vector<double> x_end   = {l, 0, 0};
 
-        int kk_NODE = 0;
+        int kk_NODE = 2;
         int kk_CONN = 0;
 
         construct_elems(x_start, x_end, {0, 1}, num_El, kk_NODE, kk_CONN);
