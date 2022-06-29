@@ -493,9 +493,7 @@ class C_Matrix_Dense{
         }
 
         double in_prod = 0.0;
-        for (int ii = 0; ii < (*this).row_size; ii++) {
-            for (int jj = 0; jj < (*this).col_size; jj++) { in_prod += obj2(ii,jj) * (*this)(ii,jj); }
-        }
+        for (int ii = 0; ii < (*this).NNZ; ii++) { in_prod += obj2.values[ii] * (*this).values[ii];  }
 
         return in_prod;
     }
