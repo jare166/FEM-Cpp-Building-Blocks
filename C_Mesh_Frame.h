@@ -247,14 +247,14 @@ class C_Mesh_Frame : public C_Mesh{
             // Read from next line
             std::stringstream str_2(line);
         
-            // Read values ( Node, (x, y, z) )
+            // Read values ( Start, End, Num_Elements )
             str_2 >> temp_val_1;
             std::getline(str_2, word, ','); str_2 >> temp_val_2;
             std::getline(str_2, word, ','); str_2 >> temp_val_3;
             
             x_CONN[iter_read][0] = min(temp_val_1, temp_val_2); // Start Node Number
             x_CONN[iter_read][1] = max(temp_val_1, temp_val_2); // End   Node Number
-            x_CONN[iter_read][2] = temp_val_3; // Number of Elements
+            x_CONN[iter_read][2] = temp_val_3;                  // Number of Elements
 
             // Exit if requested number of lines has been read
             iter_read++;
