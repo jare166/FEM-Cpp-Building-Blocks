@@ -355,6 +355,19 @@ class C_Matrix_Dense{
             for (int jj = 0; jj < num_cols; jj++) { set_elem(mat(ii, jj), r_i[ii], c_i[jj]); }
         }
     }
+    //!     iv. Set matrix/vector to zero values, no copy
+    void setZero() {
+        // 1. Assignment to Empty Object: Unable to determine size
+        if ( (*this).row_size == -1 ) { 
+            std::string error_message = "Assignment failed. Empty dense matrix object; unable to determine size.";
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::length_error(error_message); 
+            }
+
+        // 2. Assign Values
+        for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = 0.0; }
+    }
 
     //! Assignment Operator, from Dense Matrix
     C_Matrix_Dense operator=(C_Matrix_Dense obj2) {
