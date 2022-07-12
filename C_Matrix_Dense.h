@@ -246,7 +246,29 @@ class C_Matrix_Dense{
         }
 
     }
-    //!     iii. Add matrix at slices
+    //!     iii. Add element over whole matrix
+    void add_matr(double mat_val) {
+        //! Add double to entire matrix
+        /*!
+        Augments contents of matrix with double value mat_val at all points in matrix. 
+        Will throw an error if used with an empty matrix.
+
+        \param mat_val Double value to be added.
+
+        DIJ (7-12-22)
+        */
+        
+        // EXCEPTION: Check for empty object
+        if ( (*this).row_size == -1 ) { 
+            std::string error_message = "Assignment failed. Empty dense matrix object; unable to determine size.";
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::length_error(error_message); 
+        }
+
+        for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] += mat_val; }
+    }
+    //!     iv. Add matrix at slices
     void add_matr(C_Matrix_Dense mat, std::vector<int> r_i, std::vector<int> c_i) {
         //! Add Dense Matrix at Sliced Locations
         /*!
@@ -304,12 +326,12 @@ class C_Matrix_Dense{
     }
     //!     ii. Set element at slices
     void set_matr(double mat_val, std::vector<int> r_i, std::vector<int> c_i) {
-        //! Set Dense Matrix at Sliced Locations
+        //! Set Double at Sliced Locations
         /*!
-        Stores complete matrix mat at (row, pair) locations given by vectors a and b,
+        Stores double mat_val at (row, pair) locations given by vectors a and b,
         OVERWRITING the previously contained value.
 
-        \param mat_val Dense matrix value to be inserted.
+        \param mat_val Double value to be inserted.
         \param r_i vector of row values at which dense matrix should be stored in global sparse matrix
         \param c_i vector of column values "" "".
 
@@ -329,7 +351,29 @@ class C_Matrix_Dense{
         }
 
     }
-    //!     iii. Set matrix at slices
+    //!     iii. Set element over whole matrix
+    void set_matr(double mat_val) {
+        //! Set double over entire matrix
+        /*!
+        Overwrites contents of matrix with double value mat_val at all points in matrix. 
+        Will throw an error if used with an empty matrix.
+
+        \param mat_val Double value to be inserted.
+
+        DIJ (7-12-22)
+        */
+        
+        // EXCEPTION: Check for empty object
+        if ( (*this).row_size == -1 ) { 
+            std::string error_message = "Assignment failed. Empty dense matrix object; unable to determine size.";
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::length_error(error_message); 
+        }
+
+        for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = mat_val; }
+    }
+    //!     iv. Set matrix at slices
     void set_matr(C_Matrix_Dense mat, std::vector<int> r_i, std::vector<int> c_i) {
         //! Set Dense Matrix at Sliced Locations
         /*!
@@ -355,7 +399,7 @@ class C_Matrix_Dense{
             for (int jj = 0; jj < num_cols; jj++) { set_elem(mat(ii, jj), r_i[ii], c_i[jj]); }
         }
     }
-    //!     iv. Set matrix/vector to zero values, no copy
+    //!     v. Set matrix/vector to zero values, no copy
     void setZero() {
         // 1. Assignment to Empty Object: Unable to determine size
         if ( (*this).row_size == -1 ) { 
@@ -363,7 +407,7 @@ class C_Matrix_Dense{
             error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
 
             throw std::length_error(error_message); 
-            }
+        }
 
         // 2. Assign Values
         for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = 0.0; }
@@ -417,21 +461,6 @@ class C_Matrix_Dense{
 
         // 2. Assume Object Sizes Match, Assign Values
         for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = obj2[ii]; }
-        
-        return (*this);
-    }
-    //! Assignment Operator, from Scalar
-    C_Matrix_Dense operator=(double obj2) {
-        // 1. Assignment to Empty Object: Unable to determine size
-        if ( (*this).row_size == -1 ) { 
-            std::string error_message = "Assignment failed. Empty dense matrix object; unable to determine size.";
-            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
-
-            throw std::length_error(error_message); 
-            }
-
-        // 2. Assume Object Sizes Match, Assign Values
-        for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = obj2; }
         
         return (*this);
     }
