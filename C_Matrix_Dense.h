@@ -356,7 +356,6 @@ class C_Matrix_Dense{
         }
     }
 
-
     //! Assignment Operator, from Dense Matrix
     C_Matrix_Dense operator=(C_Matrix_Dense obj2) {
         // 1. Assignment to Empty Object
@@ -408,7 +407,22 @@ class C_Matrix_Dense{
         
         return (*this);
     }
-    
+    //! Assignment Operator, from Scalar
+    C_Matrix_Dense operator=(double obj2) {
+        // 1. Assignment to Empty Object: Unable to determine size
+        if ( (*this).row_size == -1 ) { 
+            std::string error_message = "Assignment failed. Empty dense matrix object; unable to determine size.";
+            error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
+
+            throw std::length_error(error_message); 
+            }
+
+        // 2. Assume Object Sizes Match, Assign Values
+        for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = obj2; }
+        
+        return (*this);
+    }
+
     //! Matrix Multiplication
     C_Matrix_Dense operator*(C_Matrix_Dense obj2) {
         /*!
