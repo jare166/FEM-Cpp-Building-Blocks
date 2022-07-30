@@ -12,6 +12,8 @@ template <typename T> std::vector<T> linspace  (int num_in, T start_in, T end_in
 std::vector<int>                     intspace  (int start_in, int end_in);
 template <typename T> T     signum    (T x);
 template <typename T> T     Heaviside (T x);
+template <typename T> T     mBracket  (T x);
+template <typename T> T     mBracket  (T x, int order);
 template <typename T> T     norm      (T x, T y);
 template <typename T> T     norm      (T x, T y, T z);
 template <typename T> T     norm      (std::vector<T> x_v);
@@ -72,8 +74,30 @@ template <typename T> T signum(T x) {
 }
 
 template <typename T> T Heaviside (T x) {
+    //! Heaviside Step Function
+    if (x < T(0)) { return T(0); }
+    else          { return T(1); }
+}
+
+template <typename T> T mBracket (T x) {
+    //! Macauley Bracket 
+    /*!
+    This function implements the standard Macauley Bracket <x> such that for x < 0, 0 is
+    returned, and for x >= 0, x is returned.
+    */
     if (x < T(0)) { return T(0); }
     else          { return x;    }
+}
+
+template <typename T> T mBracket (T x, int order) {
+    //! General Macauley Bracket 
+    /*!
+    This function implements the general-order Macauley Bracket, <x>^n such that for x < 0, 0 is
+    returned, and for x >= 0, x^n is returned.
+    In the case for which order = 0, mBracket(x, order) is equivalent to the Heaviside step function.
+    */
+    if (x < T(0)) { return T(0); }
+    else          { return pow(x, order);    }
 }
 
 //  COMPUTE VECTOR NORM
