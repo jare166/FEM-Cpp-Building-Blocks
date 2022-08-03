@@ -818,4 +818,11 @@ C_Matrix_Dense operator* (const C_Matrix_Dense& obj2, double scalar) {
     return obj_out;
 }
 
+//! Division by a Scalar
+C_Matrix_Dense operator/ (const C_Matrix_Dense& obj2, double scalar) {
+    C_Matrix_Dense obj_out(obj2.row_size, obj2.col_size);
+    for (int ii = 0; ii < obj2.NNZ; ii++) { obj_out.values[ii] = obj2.values[ii]/scalar; }
+    return obj_out;
+}
+
 #endif
