@@ -151,30 +151,6 @@ class C_Mesh_Frame : public C_Mesh{
             construct_elems( {x1_S, x2_S, x3_S}, {x1_E, x2_E, x3_E}, {jj_S, jj_E}, N, kk_NODE, kk_CONN );
         }
     }
-    //!     Construct 1D Frame (used for validation)
-    void construct_frame_1D(double l, int num_Nd_in){
-        // 1D Frame Initializer
-        num_Nd = num_Nd_in;
-        num_El = num_Nd-1;
-
-        dim = 1;
-
-        nodes.resize(num_Nd, std::vector<double>(3, 0));
-        elements.resize(num_El, std::vector<int>(2, 0));
-
-        nodes[1] = {l, 0, 0}; // Store second principal node
-
-        // Format:
-        // x_start = { (x1, y1, z1), Node 1 Number }
-        // x_end   = { (x2, y2, z2), Node 2 Number }
-        std::vector<double> x_start = {0, 0, 0};
-        std::vector<double> x_end   = {l, 0, 0};
-
-        int kk_NODE = 2;
-        int kk_CONN = 0;
-
-        construct_elems(x_start, x_end, {0, 1}, num_El, kk_NODE, kk_CONN);
-    }
 
     //! II. READ-INITIALIZE FROM FILE
     //!     Read Frame Data from File and Initialize Object
