@@ -24,6 +24,14 @@ class C_Mesh{
 
     C_Mesh() { }
 
+    void update_mesh(C_Matrix_Dense& sol) {
+        for (int ii = 0; ii < num_Nd; ii++) { 
+            nodes[ii][0] = sol.values[6*ii];
+            nodes[ii][1] = sol.values[6*ii+1];
+            nodes[ii][2] = sol.values[6*ii+2];
+        }
+    }
+
     void write_connectivity(std::string filePath) {
         std::fstream fID;
         fID.open(filePath, std::fstream::out);
