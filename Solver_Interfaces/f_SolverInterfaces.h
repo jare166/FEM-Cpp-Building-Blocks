@@ -25,7 +25,7 @@ void convert_to_Eigen(C_Matrix_Sparse& kG, Eigen::SparseMatrix<double>& kG_eigen
 
     // Iterate over rows
     int kk = 0;
-    for (int jj = 0; jj <= kG.row_size; jj++) {
+    for (int jj = 0; jj < kG.row_size; jj++) {
         std::forward_list<double>::iterator it_v = kG.value_list[jj].begin();
         std::forward_list<int>::iterator    it_c = kG.col_ind_list[jj].begin();
 
