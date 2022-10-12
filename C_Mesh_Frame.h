@@ -156,11 +156,14 @@ class C_Mesh_Frame : public C_Mesh{
     //!     Read Frame Data from File and Initialize Object
     void read_frame (std::string filePath_node, std::string filePath_conn) {
         
-        if ( filePath_node.empty() | filePath_conn.empty() ) { return; }
-
         // I. READ NODAL FILE
-        std::fstream fID_1;
+        std::ifstream fID_1;
         fID_1.open(filePath_node);
+        // Check if File Could be Read
+        if (fID_1.fail()) { 
+            std::cout << "\nNodal Data File: " << filePath_node << "\ncould not be read; exit.\n\n"; 
+            exit(-1); 
+        } 
 
         std::string line, word;
         double temp_val_1, temp_val_2, temp_val_3, temp_val_4;
@@ -203,8 +206,13 @@ class C_Mesh_Frame : public C_Mesh{
 
 
         // II. READ CONNECTIVITY FILE
-        std::fstream fID_2;
+        std::ifstream fID_2;
         fID_2.open(filePath_conn);
+        // Check if File Could be Read
+        if (fID_2.fail()) { 
+            std::cout << "\nConnectivity Data File: " << filePath_conn << "\ncould not be read; exit.\n\n"; 
+            exit(-1); 
+        } 
 
         // Get number of lines: CONNECTIVITY FILE
         std::getline(fID_2, line);
