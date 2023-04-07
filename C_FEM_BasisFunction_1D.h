@@ -8,8 +8,8 @@
 #include "C_Matrix_Dense.h"
 
 
-//! This class produces Hermite basis functions at Gauss Points for an element.
-class C_HermiteBasis{
+//! This class produces Hermite basis functions at Gauss Points for a 1-dimensional element.
+class C_HermiteBasis_1D{
     public:    
         C_Matrix_Dense sp;   //!< Interpolation functions
         C_Matrix_Dense dsp;  //!< 1st Derivative of Interpolation functions
@@ -22,7 +22,7 @@ class C_HermiteBasis{
         \param GP_Data object containing Gauss Point information, such as coordinate data.
         \param le length of element.
     */
-    C_HermiteBasis (int order, C_GaussPoint_1D GP_Data, double le){
+    C_HermiteBasis_1D (int order, C_GaussPoint_1D GP_Data, double le){
         num_sp = 4;
         
         // Assign new, correctly-sized dense matrices to member variables
@@ -52,8 +52,8 @@ class C_HermiteBasis{
 };
 
 
-//! This class produces 1st- and 2nd-order Lagrange basis functions at Gauss Points for an element.
-class C_LagrangeBasis{
+//! This class produces 1st- and 2nd-order Lagrange basis functions at Gauss Points for a 1-dimensional element.
+class C_LagrangeBasis_1D{
     public:
         C_Matrix_Dense sp;  //!< Interpolation functions
         C_Matrix_Dense dsp; //!< 1st Derivative of Interpolation functions
@@ -64,7 +64,7 @@ class C_LagrangeBasis{
         \param order the order of the requested interpolation functions. 
         \param GP_Data object containing Gauss Point information, such as coordinate data.
     */
-    C_LagrangeBasis (int order, C_GaussPoint_1D GP_Data){
+    C_LagrangeBasis_1D (int order, C_GaussPoint_1D GP_Data){
         if (order == 1) {
             // Linear
             num_sp = 2;

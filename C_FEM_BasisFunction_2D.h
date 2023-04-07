@@ -8,7 +8,7 @@
 #include "C_Matrix_Dense.h"
 
 
-//! This class produces 1st- and 2nd-order Lagrange basis functions at Gauss Points for an element.
+//! This class produces 1st- and 2nd-order Lagrange basis functions at Gauss Points for a 1-dimensional element.
 class C_LagrangeBasis_2D{
     public:
         C_Matrix_Dense sp;  //!< Interpolation functions

@@ -43,7 +43,7 @@ class C_Material{
 };
 
 void stiffnessMatrix_AxialBar(int itEl, C_Mesh_Frame& mesh, C_Material& mat, 
-    C_Matrix_Sparse& kGlobal, C_LagrangeBasis& feL, C_GaussPoint_1D& GP_Data){
+    C_Matrix_Sparse& kGlobal, C_LagrangeBasis_1D& feL, C_GaussPoint_1D& GP_Data){
     
     std::vector<int>      elDoF = mesh.elements[itEl];
     std::vector<double> elNodes = {mesh.nodes[elDoF[0]][0], mesh.nodes[elDoF[1]][0]};
