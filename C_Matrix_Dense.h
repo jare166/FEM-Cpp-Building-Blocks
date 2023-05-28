@@ -520,13 +520,13 @@ class C_Matrix_Dense {
     }
     
     //! Return copy of object containing matrix negation
-    C_Matrix_Dense operator-() {
+    C_Matrix_Dense& operator-() {
         C_Matrix_Dense obj_out = (*this);
         for (int ii = 0; ii < (*this).NNZ; ii++) { obj_out.values[ii] = -obj_out.values[ii]; }
         return obj_out;
     }
     //! Return copy of object flagged as Transposed
-    C_Matrix_Dense T () {
+    C_Matrix_Dense& T () {
         // Copy Matrix
         C_Matrix_Dense obj_out = (*this);
 
@@ -797,28 +797,28 @@ std::ostream& operator<<(std::ostream& os, C_Matrix_Dense obj) {
 }
 
 //! Generate Identity Matrix
-C_Matrix_Dense identity(int dim) {
+C_Matrix_Dense& identity(int dim) {
     C_Matrix_Dense obj_out(dim, dim);
     for (int ii = 0; ii < dim; ii++) { obj_out.values[(ii*(1+dim))] = 1; }
     return obj_out;
 }
 
 //! (Pre-) Scalar Multiplication
-C_Matrix_Dense operator* (double scalar, const C_Matrix_Dense& obj2) {
+C_Matrix_Dense& operator* (double scalar, const C_Matrix_Dense& obj2) {
     C_Matrix_Dense obj_out(obj2.row_size, obj2.col_size);
     for (int ii = 0; ii < obj2.NNZ; ii++) { obj_out.values[ii] = scalar*obj2.values[ii]; }
     return obj_out;
 }
 
 //! (Post-) Scalar Multiplication
-C_Matrix_Dense operator* (const C_Matrix_Dense& obj2, double scalar) {
+C_Matrix_Dense& operator* (const C_Matrix_Dense& obj2, double scalar) {
     C_Matrix_Dense obj_out(obj2.row_size, obj2.col_size);
     for (int ii = 0; ii < obj2.NNZ; ii++) { obj_out.values[ii] = scalar*obj2.values[ii]; }
     return obj_out;
 }
 
 //! Division by a Scalar
-C_Matrix_Dense operator/ (const C_Matrix_Dense& obj2, double scalar) {
+C_Matrix_Dense& operator/ (const C_Matrix_Dense& obj2, double scalar) {
     C_Matrix_Dense obj_out(obj2.row_size, obj2.col_size);
     for (int ii = 0; ii < obj2.NNZ; ii++) { obj_out.values[ii] = obj2.values[ii]/scalar; }
     return obj_out;
