@@ -10,10 +10,10 @@
 int main()
 {
     // Test 1: Dense Matrix Operations
-    C_Matrix_Dense A1(4,4), B1(4,4), C1(4,6);
-    C_Matrix_Dense A2(4,3), B2(3,4), C2(3,3);
+    C_Matrix_Dense<double> A1(4,4), B1(4,4), C1(4,6);
+    C_Matrix_Dense<double> A2(4,3), B2(3,4), C2(3,3);
 
-    C_Matrix_Dense A3(2,2);
+    C_Matrix_Dense<double> A3(2,2);
     A3 = {1, 2, 3, 4};
     std::cout << A3;
 
@@ -59,20 +59,20 @@ int main()
 
 
     // 2. Multiplications
-    C_Matrix_Dense D1 = A1*B1;
-    C_Matrix_Dense D2 = A1*C1;
-    C_Matrix_Dense D3 = A1*B2.T();
+    C_Matrix_Dense<double> D1 = A1*B1;
+    C_Matrix_Dense<double> D2 = A1*C1;
+    C_Matrix_Dense<double> D3 = A1*B2.T();
 
-    C_Matrix_Dense D4 = B1*B2.T();
-    C_Matrix_Dense D5 = C2.T()*A2.T();
-    C_Matrix_Dense D6 = C2*A2.T();
+    C_Matrix_Dense<double> D4 = B1*B2.T();
+    C_Matrix_Dense<double> D5 = C2.T()*A2.T();
+    C_Matrix_Dense<double> D6 = C2*A2.T();
 
-    C_Matrix_Dense D7 = B1*(B2.T() + A2);
-    C_Matrix_Dense D8 = B1*(B2.T() - A2*5.0);
-    C_Matrix_Dense D9 = C2*6.0*A2.T();
+    C_Matrix_Dense<double> D7 = B1*(B2.T() + A2);
+    C_Matrix_Dense<double> D8 = B1*(B2.T() - A2*5.0);
+    C_Matrix_Dense<double> D9 = C2*6.0*A2.T();
 
-    C_Matrix_Dense D10 = C1*C1.T(); 
-    C_Matrix_Dense D11 = C1.T()*C1;
+    C_Matrix_Dense<double> D10 = C1*C1.T(); 
+    C_Matrix_Dense<double> D11 = C1.T()*C1;
 
     std::cout << "\nAfter Multiplication: \n";
     std::cout << D1;
@@ -89,7 +89,7 @@ int main()
 
 
     // 3. Trivial Multiplications
-    C_Matrix_Dense A(3,3), B(3,3);
+    C_Matrix_Dense<double> A(3,3), B(3,3);
 
     A(0,0) = 3; A(0,1) = 4; A(0,2) = 5;
     A(1,0) = 3; A(1,1) = 4; A(1,2) = 5;
@@ -116,7 +116,7 @@ int main()
 
 
     // 4. Inner Product and Outer Product
-    C_Matrix_Dense a(1,4), b(4, 1);
+    C_Matrix_Dense<double> a(1,4), b(4, 1);
 
     a(0,0) = 1; a(0,1) = 2; a(0,2) = 3; a(0,3) = 4;
     b(0,0) = 1; b(1,0) = 2; b(2,0) = 3; b(3,0) = 4;
@@ -150,32 +150,32 @@ int main()
     double c_double = 5;
 
     //  i. Square Matrices
-    C_Matrix_Dense K1 = (C2 + c_double*(B.T()*B)); // Y
-    C_Matrix_Dense K2 =  C2 + c_double*B.T()*B;    // Y
+    C_Matrix_Dense<double> K1 = (C2 + c_double*(B.T()*B)); // Y
+    C_Matrix_Dense<double> K2 =  C2 + c_double*B.T()*B;    // Y
 
     std::cout << "\nSquare Matrices";
     std::cout << K1;
     std::cout << K2;
 
     //  ii. Non-Square Matrices, No Constant
-    C_Matrix_Dense K3 = B1 + (B2.T()*B2); // Y
-    C_Matrix_Dense K4 = B1 + B2.T()*B2;   // Y
+    C_Matrix_Dense<double> K3 = B1 + (B2.T()*B2); // Y
+    C_Matrix_Dense<double> K4 = B1 + B2.T()*B2;   // Y
 
     std::cout << "\nNon-Square Matrices, No Constant";
     std::cout << K3;
     std::cout << K4;
 
     //  iii. Non-Square Matrices, Post-Multiplied by Constant
-    C_Matrix_Dense K5 = B1 + (B2.T()*B2)*c_double; // Y
-    C_Matrix_Dense K6 = B1 + B2.T()*B2*c_double;   // Y
+    C_Matrix_Dense<double> K5 = B1 + (B2.T()*B2)*c_double; // Y
+    C_Matrix_Dense<double> K6 = B1 + B2.T()*B2*c_double;   // Y
 
     std::cout << "\nNon-Square Matrices, Multiplied by Constant";
     std::cout << K5;
     std::cout << K6;
 
     //  iv. Non-Square Matrices, Post-Multiplied by Constant
-    C_Matrix_Dense K7 = B1 + c_double*(B2.T()*B2); // Y
-    C_Matrix_Dense K8 = B1 + c_double*B2.T()*B2;   // Y
+    C_Matrix_Dense<double> K7 = B1 + c_double*(B2.T()*B2); // Y
+    C_Matrix_Dense<double> K8 = B1 + c_double*B2.T()*B2;   // Y
 
     std::cout << "\nNon-Square Matrices, Multiplied by Constant";
     std::cout << K7;

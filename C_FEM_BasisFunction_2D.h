@@ -11,8 +11,8 @@
 //! This class produces 1st- and 2nd-order Lagrange basis functions at Gauss Points for a 1-dimensional element.
 class C_LagrangeBasis_2D{
     public:
-        C_Matrix_Dense sp;  //!< Interpolation functions
-        C_Matrix_Dense dsp; //!< 1st Derivative of Interpolation functions
+        C_Matrix_Dense<double> sp;  //!< Interpolation functions
+        C_Matrix_Dense<double> dsp; //!< 1st Derivative of Interpolation functions
         int num_sp;
 
     //! Class Constructor
@@ -24,8 +24,8 @@ class C_LagrangeBasis_2D{
     C_LagrangeBasis_2D (int nodes_per_elem, C_GaussPoint_1D GP_Data_x, C_GaussPoint_1D GP_Data_y){
 
         // Assign new, correctly-sized dense matrices to member variables
-        this -> sp  = C_Matrix_Dense(GP_Data_x.num_GP, 1);
-        this -> dsp = C_Matrix_Dense(GP_Data_x.num_GP, 2);
+        this -> sp  = C_Matrix_Dense<double>(GP_Data_x.num_GP, 1);
+        this -> dsp = C_Matrix_Dense<double>(GP_Data_x.num_GP, 2);
 
         std::vector<int> sgn_x = {-1, 1, 1,-1, 0, 1, 0,-1, 0};
         std::vector<int> sgn_y = {-1,-1, 1, 1,-1, 0, 1, 0, 0};

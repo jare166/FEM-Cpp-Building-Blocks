@@ -11,9 +11,9 @@
 //! This class produces Hermite basis functions at Gauss Points for a 1-dimensional element.
 class C_HermiteBasis_1D{
     public:    
-        C_Matrix_Dense sp;   //!< Interpolation functions
-        C_Matrix_Dense dsp;  //!< 1st Derivative of Interpolation functions
-        C_Matrix_Dense ddsp; //!< 2nd Derivative of Interpolations Functions
+        C_Matrix_Dense<double> sp;   //!< Interpolation functions
+        C_Matrix_Dense<double> dsp;  //!< 1st Derivative of Interpolation functions
+        C_Matrix_Dense<double> ddsp; //!< 2nd Derivative of Interpolations Functions
         int num_sp;
 
     //! Class Constructor
@@ -26,9 +26,9 @@ class C_HermiteBasis_1D{
         num_sp = 4;
         
         // Assign new, correctly-sized dense matrices to member variables
-        this -> sp   = C_Matrix_Dense(GP_Data.num_GP, num_sp);
-        this -> dsp  = C_Matrix_Dense(GP_Data.num_GP, num_sp);
-        this -> ddsp = C_Matrix_Dense(GP_Data.num_GP, num_sp);
+        this -> sp   = C_Matrix_Dense<double>(GP_Data.num_GP, num_sp);
+        this -> dsp  = C_Matrix_Dense<double>(GP_Data.num_GP, num_sp);
+        this -> ddsp = C_Matrix_Dense<double>(GP_Data.num_GP, num_sp);
 
         for (int ii = 0; ii < GP_Data.num_GP; ii++){
             double x = GP_Data.pt[ii]; // Evaluate x at Gauss Points
@@ -55,8 +55,8 @@ class C_HermiteBasis_1D{
 //! This class produces 1st- and 2nd-order Lagrange basis functions at Gauss Points for a 1-dimensional element.
 class C_LagrangeBasis_1D{
     public:
-        C_Matrix_Dense sp;  //!< Interpolation functions
-        C_Matrix_Dense dsp; //!< 1st Derivative of Interpolation functions
+        C_Matrix_Dense<double> sp;  //!< Interpolation functions
+        C_Matrix_Dense<double> dsp; //!< 1st Derivative of Interpolation functions
         int num_sp;
 
     //! Class Constructor
@@ -70,8 +70,8 @@ class C_LagrangeBasis_1D{
             num_sp = 2;
 
             // Assign new, correctly-sized dense matrices to member variables
-            this -> sp = C_Matrix_Dense(GP_Data.num_GP, num_sp);
-            this -> dsp = C_Matrix_Dense(GP_Data.num_GP, num_sp);
+            this -> sp  = C_Matrix_Dense<double>(GP_Data.num_GP, num_sp);
+            this -> dsp = C_Matrix_Dense<double>(GP_Data.num_GP, num_sp);
 
             for (int ii = 0; ii < GP_Data.num_GP; ii++){
                 double x = GP_Data.pt[ii]; // Evaluate x at Gauss Points
@@ -88,8 +88,8 @@ class C_LagrangeBasis_1D{
             num_sp = 3;
             
             // Assign new, correctly-sized dense matrices to member variables
-            this -> sp = C_Matrix_Dense(GP_Data.num_GP, num_sp);
-            this -> dsp = C_Matrix_Dense(GP_Data.num_GP, num_sp);
+            this -> sp  = C_Matrix_Dense<double>(GP_Data.num_GP, num_sp);
+            this -> dsp = C_Matrix_Dense<double>(GP_Data.num_GP, num_sp);
 
             for (int ii = 0; ii < GP_Data.num_GP; ii++){
                 double x = GP_Data.pt[ii]; // Evaluate x at Gauss Points

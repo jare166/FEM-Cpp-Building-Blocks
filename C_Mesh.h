@@ -15,8 +15,8 @@ template<typename T> std::vector<T> linspace(int num_in, T start_in, T end_in);
 //! This class is used to store data describing a mesh of 1, 2, or 3 dimensions.
 class C_Mesh{
     public:
-        C_Matrix_Dense nodes;
-        C_Matrix_Dense elements;
+        C_Matrix_Dense<double> nodes;
+        C_Matrix_Dense<int> elements;
         int num_NPE = 0; //! Nodes per element
         int num_Nd  = 0; //! Total number of nodes
         int num_El  = 0; //! Total number of elements
@@ -24,7 +24,7 @@ class C_Mesh{
 
     C_Mesh() { }
 
-    void update_mesh(C_Matrix_Dense& sol) {
+    void update_mesh(C_Matrix_Dense<double>& sol) {
         for (int ii = 0; ii < num_Nd; ii++) { 
             nodes(ii, 0) = sol.values[6*ii];
             nodes(ii, 1) = sol.values[6*ii+1];

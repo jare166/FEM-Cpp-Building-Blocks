@@ -19,8 +19,8 @@ class C_Mesh_Frame : public C_Mesh{
     INHERITED PROPERTIES:
 
     public:
-        C_Matrix_Dense nodes;
-        C_Matrix_Dense elements;
+        C_Matrix_Dense<double> nodes;
+        C_Matrix_Dense<int> elements;
         int num_NPE = 2; //! Nodes per element
         int num_Nd  = 0; //! Total number of nodes
         int num_El  = 0; //! Total number of elements
@@ -110,7 +110,7 @@ class C_Mesh_Frame : public C_Mesh{
 
     }
     //!     Construct Frame from Nodal Data and Connectivity
-    void construct_frame(C_Matrix_Dense& x_NODE, C_Matrix_Dense& x_CONN) {
+    void construct_frame(C_Matrix_Dense<double>& x_NODE, C_Matrix_Dense<int>& x_CONN) {
         double len_elem;
 
         double x1_S, x2_S, x3_S; // Start Coordinates
@@ -178,7 +178,7 @@ class C_Mesh_Frame : public C_Mesh{
         str_1 >> num_pr_nodes;
 
         // Assign nodal storage vectors
-        C_Matrix_Dense x_NODE(num_pr_nodes, 4);
+        C_Matrix_Dense<double> x_NODE(num_pr_nodes, 4);
         //  Details: vector of num_pr_nodes, 4-column vectors, each w/ default value of 0.0.
 
         // Read Successive Lines for Data
@@ -222,7 +222,7 @@ class C_Mesh_Frame : public C_Mesh{
         str_2 >> num_connect;
 
         // Assign nodal storage vectors
-        C_Matrix_Dense x_CONN(num_connect, 3);
+        C_Matrix_Dense<int> x_CONN(num_connect, 3);
         //  Details: vector of num_connect, 3-column vectors, each w/ default value of 0.0.
 
         // Read Successive Lines for Data
@@ -259,8 +259,8 @@ class C_Mesh_Frame : public C_Mesh{
         }
 
         // Set Storage Matrices to Correct Size
-        this -> nodes    = C_Matrix_Dense(num_Nd, 3);
-        this -> elements = C_Matrix_Dense(num_El, 2);
+        this -> nodes    = C_Matrix_Dense<double>(num_Nd, 3);
+        this -> elements = C_Matrix_Dense<int>(num_El, 2);
 
         // Add Data to Global Mesh Objects
         construct_frame(x_NODE, x_CONN);

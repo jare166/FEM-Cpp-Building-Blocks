@@ -29,29 +29,29 @@ namely:
 Author: Dominic Jarecki
 Date: 5-03-2022
 */
-class C_Matrix_Dense {
+template <typename Typ> class C_Matrix_Dense {
     public:
-        std::vector<double> values;        //! All matrix values stored sequentially in vector
+        std::vector<Typ> values;             //! All matrix values stored sequentially in vector
         int  row_size = -1, col_size = -1; //! Fixed size, not allowed to grow.
         int  NNZ;                          //! Total number of elements
         bool transpose = false;            //! Object currently transposed?
 
     // I. Constructor
-    C_Matrix_Dense() {} 
+    C_Matrix_Dense<Typ>() {} 
 
-    C_Matrix_Dense(int row_size_in, int col_size_in) {
+    C_Matrix_Dense<Typ>(int row_size_in, int col_size_in) {
         row_size = row_size_in;
         col_size = col_size_in;
         NNZ = row_size*col_size;
 
         values.resize(NNZ);
-        for (int ii = 0; ii < NNZ; ii++) { values[ii] = 0.0; }
+        for (int ii = 0; ii < NNZ; ii++) { values[ii] = Typ(0); }
     }
 
 
     // II. Operator Overloads
     //! 1. Basic Access Operation
-    double& operator() (int r_i, int c_i) { 
+    Typ& operator() (int r_i, int c_i) { 
         //! Access Contents of Matrix
         /*! 
         This function returns elements contained in C_Matrix_Dense. Passed by
@@ -74,7 +74,7 @@ class C_Matrix_Dense {
         else                    { ij = c_i*row_1 + r_i; }
 
         // Access value assigned
-        double& access_val = (*this).values[ij];
+        Typ& access_val = (*this).values[ij];
         return access_val;
     }
     
@@ -193,7 +193,7 @@ class C_Matrix_Dense {
     //! 3. Slice MODIFICATION Operations --> NO VALUE RETURNED
     //! add(): ADD TO PREVIOUSLY-STORED DATA
     //!     i. Add element at index
-    void add_elem(double val, int r_i, int c_i) {
+    void add_elem(const Typ val, int r_i, int c_i) {
         /*!
         This function adds elements to the dense matrix; operations here are 
         redundant w/ parentheses operator ().
@@ -220,7 +220,7 @@ class C_Matrix_Dense {
         (*this).values[ij] += val;
     }
     //!     ii. Add element at slices
-    void add_matr(double mat_val, std::vector<int> r_i, std::vector<int> c_i) {
+    void add_matr(Typ mat_val, std::vector<int> r_i, std::vector<int> c_i) {
         //! Add Dense Matrix at Sliced Locations
         /*!
         Stores complete matrix mat at (row, pair) locations given by vectors a and b,
@@ -247,13 +247,13 @@ class C_Matrix_Dense {
 
     }
     //!     iii. Add element over whole matrix
-    void add_matr(double mat_val) {
-        //! Add double to entire matrix
+    void add_matr(Typ mat_val) {
+        //! Add value to entire matrix
         /*!
-        Augments contents of matrix with double value mat_val at all points in matrix. 
+        Augments contents of matrix with value mat_val at all points in matrix. 
         Will throw an error if used with an empty matrix.
 
-        \param mat_val Double value to be added.
+        \param mat_val value to be added.
 
         DIJ (7-12-22)
         */
@@ -269,7 +269,7 @@ class C_Matrix_Dense {
         for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] += mat_val; }
     }
     //!     iv. Add matrix at slices
-    void add_matr(C_Matrix_Dense mat, std::vector<int> r_i, std::vector<int> c_i) {
+    void add_matr(C_Matrix_Dense<Typ> mat, std::vector<int> r_i, std::vector<int> c_i) {
         //! Add Dense Matrix at Sliced Locations
         /*!
         Stores complete matrix mat at (row, pair) locations given by vectors a and b,
@@ -298,7 +298,7 @@ class C_Matrix_Dense {
     
     //! set(): OVER-WRITE PREVIOUSLY-STORED DATA
     //!     i. Set element at index
-    void set_elem(const double val, int r_i, int c_i) {
+    void set_elem(const Typ val, int r_i, int c_i) {
         /*!
         This function sets elements in the dense matrix,
         OVERWRITING the previously contained value, if present.
@@ -325,13 +325,13 @@ class C_Matrix_Dense {
         (*this).values[ij] = val;
     }
     //!     ii. Set element at slices
-    void set_matr(double mat_val, std::vector<int> r_i, std::vector<int> c_i) {
-        //! Set Double at Sliced Locations
+    void set_matr(Typ mat_val, std::vector<int> r_i, std::vector<int> c_i) {
+        //! Set value at Sliced Locations
         /*!
-        Stores double mat_val at (row, pair) locations given by vectors a and b,
+        Stores mat_val at (row, pair) locations given by vectors a and b,
         OVERWRITING the previously contained value.
 
-        \param mat_val Double value to be inserted.
+        \param mat_val value to be inserted.
         \param r_i vector of row values at which dense matrix should be stored in global sparse matrix
         \param c_i vector of column values "" "".
 
@@ -352,13 +352,13 @@ class C_Matrix_Dense {
 
     }
     //!     iii. Set element over whole matrix
-    void set_matr(double mat_val) {
-        //! Set double over entire matrix
+    void set_matr(Typ mat_val) {
+        //! Set value over entire matrix
         /*!
-        Overwrites contents of matrix with double value mat_val at all points in matrix. 
+        Overwrites contents of matrix with value mat_val at all points in matrix. 
         Will throw an error if used with an empty matrix.
 
-        \param mat_val Double value to be inserted.
+        \param mat_val value to be inserted.
 
         DIJ (7-12-22)
         */
@@ -374,7 +374,7 @@ class C_Matrix_Dense {
         for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = mat_val; }
     }
     //!     iv. Set matrix at slices
-    void set_matr(C_Matrix_Dense& mat, std::vector<int> r_i, std::vector<int> c_i) {
+    void set_matr(C_Matrix_Dense<Typ>& mat, std::vector<int> r_i, std::vector<int> c_i) {
         //! Set Dense Matrix at Sliced Locations
         /*!
         Stores complete matrix mat at (row, pair) locations given by vectors a and b,
@@ -410,11 +410,11 @@ class C_Matrix_Dense {
         }
 
         // 2. Assign Values
-        for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = 0.0; }
+        for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = Typ(0); }
     }
 
     //! Assignment Operator, from Dense Matrix
-    C_Matrix_Dense operator=(C_Matrix_Dense obj2) {
+    C_Matrix_Dense<Typ> operator=(C_Matrix_Dense<Typ> obj2) {
         // 1. Assignment to Empty Object
         if ( (*this).row_size == -1 ) { 
             // Update Size
@@ -435,7 +435,7 @@ class C_Matrix_Dense {
         return (*this);
     }
     //! Assignment Operator, from Array
-    C_Matrix_Dense operator=(double *obj2) {
+    C_Matrix_Dense<Typ> operator=(Typ *obj2) {
         // 1. Assignment to Empty Object: Unable to determine size
         if ( (*this).row_size == -1 ) { 
             std::string error_message = "Assignment failed. Empty dense matrix object; unable to determine size.";
@@ -450,7 +450,7 @@ class C_Matrix_Dense {
         return (*this);
     }
     //! Assignment Operator, from Vector
-    C_Matrix_Dense operator=(std::vector<double> obj2) {
+    C_Matrix_Dense<Typ> operator=(std::vector<Typ> obj2) {
         // 1. Assignment to Empty Object: Unable to determine size
         if ( (*this).row_size == -1 ) { 
             std::string error_message = "Assignment failed. Empty dense matrix object; unable to determine size.";
@@ -466,7 +466,7 @@ class C_Matrix_Dense {
     }
 
     //! Matrix Multiplication
-    C_Matrix_Dense operator*(C_Matrix_Dense obj2) {
+    C_Matrix_Dense<Typ> operator*(C_Matrix_Dense<Typ> obj2) {
         /*!
         Overloads * operator to allow two matrices to be multiplied.
 
@@ -483,12 +483,12 @@ class C_Matrix_Dense {
         C_Matrix_Dense obj_out(ii_M, jj_M); 
 
         // ii. Otherwise, compute matrix product
-        double sum;
+        Typ sum;
         int ij;
 
         for (int ii = 0; ii < ii_M; ii++) {
             for (int jj = 0; jj < jj_M; jj++) {
-                sum=0;
+                sum = Typ(0);
                 for(int kk = 0; kk < kk_M; kk++) { sum += (*this)(ii,kk)*obj2(kk,jj); }
                 ij = ii*jj_M + jj;
                 obj_out.values[ij] = sum;
@@ -497,7 +497,7 @@ class C_Matrix_Dense {
         return obj_out;
     }   
     //! Matrix Addition
-    C_Matrix_Dense operator+(C_Matrix_Dense obj2) {
+    C_Matrix_Dense<Typ> operator+(C_Matrix_Dense<Typ> obj2) {
         // Check: Ensure both matrices are the same size
         check_size_addition((*this), obj2, "Addition");
 
@@ -508,7 +508,7 @@ class C_Matrix_Dense {
         return obj_out;
     }
     //! Matrix Subtraction
-    C_Matrix_Dense operator-(C_Matrix_Dense obj2) {
+    C_Matrix_Dense<Typ> operator-(C_Matrix_Dense<Typ> obj2) {
         // Check: Ensure both matrices are the same size
         check_size_addition((*this), obj2, "Subtraction");
 
@@ -520,13 +520,13 @@ class C_Matrix_Dense {
     }
     
     //! Return copy of object containing matrix negation
-    C_Matrix_Dense operator-() {
+    C_Matrix_Dense<Typ> operator-() {
         C_Matrix_Dense obj_out = (*this);
         for (int ii = 0; ii < (*this).NNZ; ii++) { obj_out.values[ii] = -obj_out.values[ii]; }
         return obj_out;
     }
     //! Return copy of object flagged as Transposed
-    C_Matrix_Dense T () {
+    C_Matrix_Dense<Typ> T() {
         // Copy Matrix
         C_Matrix_Dense obj_out = (*this);
 
@@ -539,7 +539,7 @@ class C_Matrix_Dense {
     }
 
     //! Inner Product
-    double inner_product(const C_Matrix_Dense& obj2) {
+    Typ inner_product(const C_Matrix_Dense<Typ>& obj2) {
         if ((*this).NNZ != obj2.NNZ) { 
             std::string error_message = "Inner product failed. NNZ elements mismatch.";
             error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
@@ -547,13 +547,13 @@ class C_Matrix_Dense {
             throw std::length_error(error_message);
         }
 
-        double in_prod = 0.0;
+        Typ in_prod = Typ(0);
         for (int ii = 0; ii < (*this).NNZ; ii++) { in_prod += obj2.values[ii] * (*this).values[ii];  }
 
         return in_prod;
     }
     //! L2 Vector Norm
-    double norm() {
+    Typ norm() {
         return std::sqrt( inner_product((*this)) );
     }
 
@@ -561,7 +561,7 @@ class C_Matrix_Dense {
     //! ERROR-CHECK UTILITIES
     //! 1. Check Access
     //!     i. Check Access (input: index, index)
-    void check_size_access(const C_Matrix_Dense& obj1, int r_i, int c_i) {
+    void check_size_access(const C_Matrix_Dense<Typ>& obj1, int r_i, int c_i) {
         //! Check that matrix sizes match before addition, etc.
         /*!
         This function checks matrix having its value accessed to ensure no
@@ -595,7 +595,7 @@ class C_Matrix_Dense {
         
     }
     //!     ii. Check Access (input: index, slice)
-    void check_size_access(const C_Matrix_Dense& obj1, int r_i, std::vector<int> c_i) {
+    void check_size_access(const C_Matrix_Dense<Typ>& obj1, int r_i, std::vector<int> c_i) {
         //! Check that matrix sizes match before addition, etc.
         /*!
         This function checks matrix having its value accessed to ensure no
@@ -630,7 +630,7 @@ class C_Matrix_Dense {
         }
     }
     //!     iii. Check Access (input: slice, index)
-    void check_size_access(const C_Matrix_Dense& obj1, std::vector<int> r_i, int c_i) {
+    void check_size_access(const C_Matrix_Dense<Typ>& obj1, std::vector<int> r_i, int c_i) {
         //! Check that matrix sizes match before addition, etc.
         /*!
         This function checks matrix having its value accessed to ensure no
@@ -666,7 +666,7 @@ class C_Matrix_Dense {
         
     }
     //!     iv. Check Access (input: slice, slice)
-    void check_size_access(const C_Matrix_Dense& obj1, std::vector<int> r_i, std::vector<int> c_i) {
+    void check_size_access(const C_Matrix_Dense<Typ>& obj1, std::vector<int> r_i, std::vector<int> c_i) {
         //! Check that matrix sizes match before addition, etc.
         /*!
         This function checks matrix having its value accessed to ensure no
@@ -704,7 +704,7 @@ class C_Matrix_Dense {
     }
 
     //! 2. Check dimensions for addition, subtration, and asignment
-    void check_size_addition(const C_Matrix_Dense& obj1, const C_Matrix_Dense& obj2, std::string op_string) {
+    void check_size_addition(const C_Matrix_Dense<Typ>& obj1, const C_Matrix_Dense<Typ>& obj2, std::string op_string) {
         //! Check that matrix sizes match before addition, etc.
         /*!
         This function checks size of two matrices intended for operations such as 
@@ -733,7 +733,7 @@ class C_Matrix_Dense {
     }
 
     //! 3. Check dimensions for multiplication
-    void check_size_multiplication(const C_Matrix_Dense& obj1, const C_Matrix_Dense& obj2, std::string op_string, int& ii_M, int& jj_M, int& kk_M) {
+    void check_size_multiplication(const C_Matrix_Dense<Typ>& obj1, const C_Matrix_Dense<Typ>& obj2, std::string op_string, int& ii_M, int& jj_M, int& kk_M) {
         //! Check that matrix inner dimensions match before multiplication
         /*!
         This function checks size of two matrices intended for a multiplication
@@ -782,8 +782,8 @@ class C_Matrix_Dense {
 This overload is performed exterior to the C_Matrix_... class so that it can be 
 accessed by the std::ostream class and standard syntax can be employed.
 */
-std::ostream& operator<<(std::ostream& os, C_Matrix_Dense obj) {
-    double output_width = 6;
+template <typename Typ> std::ostream& operator<<(std::ostream& os, C_Matrix_Dense<Typ> obj) {
+    int output_width = 6;
 
     os << "\n";
     os << obj.row_size << " x " << obj.col_size;
@@ -797,29 +797,29 @@ std::ostream& operator<<(std::ostream& os, C_Matrix_Dense obj) {
 }
 
 //! Generate Identity Matrix
-C_Matrix_Dense identity(int dim) {
-    C_Matrix_Dense obj_out(dim, dim);
-    for (int ii = 0; ii < dim; ii++) { obj_out.values[(ii*(1+dim))] = 1; }
+C_Matrix_Dense<double> identity(int dim) {
+    C_Matrix_Dense<double> obj_out(dim, dim);
+    for (int ii = 0; ii < dim; ii++) { obj_out.values[(ii*(1+dim))] = 1.0; }
     return obj_out;
 }
 
 //! (Pre-) Scalar Multiplication
-C_Matrix_Dense operator* (double scalar, const C_Matrix_Dense& obj2) {
-    C_Matrix_Dense obj_out(obj2.row_size, obj2.col_size);
+template <typename Typ> C_Matrix_Dense<Typ> operator* (Typ scalar, const C_Matrix_Dense<Typ>& obj2) {
+    C_Matrix_Dense<Typ> obj_out(obj2.row_size, obj2.col_size);
     for (int ii = 0; ii < obj2.NNZ; ii++) { obj_out.values[ii] = scalar*obj2.values[ii]; }
     return obj_out;
 }
 
 //! (Post-) Scalar Multiplication
-C_Matrix_Dense operator* (const C_Matrix_Dense& obj2, double scalar) {
-    C_Matrix_Dense obj_out(obj2.row_size, obj2.col_size);
+template <typename Typ> C_Matrix_Dense<Typ> operator* (const C_Matrix_Dense<Typ>& obj2, Typ scalar) {
+    C_Matrix_Dense<Typ> obj_out(obj2.row_size, obj2.col_size);
     for (int ii = 0; ii < obj2.NNZ; ii++) { obj_out.values[ii] = scalar*obj2.values[ii]; }
     return obj_out;
 }
 
 //! Division by a Scalar
-C_Matrix_Dense operator/ (const C_Matrix_Dense& obj2, double scalar) {
-    C_Matrix_Dense obj_out(obj2.row_size, obj2.col_size);
+template <typename Typ> C_Matrix_Dense<Typ> operator/ (const C_Matrix_Dense<Typ>& obj2, Typ scalar) {
+    C_Matrix_Dense<Typ> obj_out(obj2.row_size, obj2.col_size);
     for (int ii = 0; ii < obj2.NNZ; ii++) { obj_out.values[ii] = obj2.values[ii]/scalar; }
     return obj_out;
 }
