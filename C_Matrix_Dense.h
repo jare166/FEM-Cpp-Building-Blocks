@@ -269,7 +269,7 @@ class C_Matrix_Dense {
         for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] += mat_val; }
     }
     //!     iv. Add matrix at slices
-    void add_matr(C_Matrix_Dense& mat, std::vector<int> r_i, std::vector<int> c_i) {
+    void add_matr(C_Matrix_Dense mat, std::vector<int> r_i, std::vector<int> c_i) {
         //! Add Dense Matrix at Sliced Locations
         /*!
         Stores complete matrix mat at (row, pair) locations given by vectors a and b,
@@ -466,7 +466,7 @@ class C_Matrix_Dense {
     }
 
     //! Matrix Multiplication
-    C_Matrix_Dense operator*(C_Matrix_Dense& obj2) {
+    C_Matrix_Dense operator*(C_Matrix_Dense obj2) {
         /*!
         Overloads * operator to allow two matrices to be multiplied.
 
@@ -497,7 +497,7 @@ class C_Matrix_Dense {
         return obj_out;
     }   
     //! Matrix Addition
-    C_Matrix_Dense operator+(C_Matrix_Dense& obj2) {
+    C_Matrix_Dense operator+(C_Matrix_Dense obj2) {
         // Check: Ensure both matrices are the same size
         check_size_addition((*this), obj2, "Addition");
 
@@ -508,7 +508,7 @@ class C_Matrix_Dense {
         return obj_out;
     }
     //! Matrix Subtraction
-    C_Matrix_Dense operator-(C_Matrix_Dense& obj2) {
+    C_Matrix_Dense operator-(C_Matrix_Dense obj2) {
         // Check: Ensure both matrices are the same size
         check_size_addition((*this), obj2, "Subtraction");
 
