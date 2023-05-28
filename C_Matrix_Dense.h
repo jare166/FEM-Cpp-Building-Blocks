@@ -78,9 +78,9 @@ class C_Matrix_Dense {
         return access_val;
     }
     
-    //! 2. Slice ACCESS Operations --> passed by reference, BUT reference is to a new C_M_D object.
+    //! 2. Slice ACCESS Operations --> CAN'T be passed by reference, since newly-created object is in local scope.
     //!     i.   Slice: (row, col_range)
-    C_Matrix_Dense& operator() (int r_i, std::vector<int> c_i) { 
+    C_Matrix_Dense operator() (int r_i, std::vector<int> c_i) { 
         //! Access Contents of Matrix
         /*! 
         This function returns a slice of elements contained in C_Matrix_Dense. NOT passed by
@@ -116,7 +116,7 @@ class C_Matrix_Dense {
         return access_slice;
     }
     //!     ii.  Slice: (row_range, col)
-    C_Matrix_Dense& operator() (std::vector<int> r_i, int c_i) { 
+    C_Matrix_Dense operator() (std::vector<int> r_i, int c_i) { 
         //! Access Contents of Matrix
         /*! 
         This function returns a slice of elements contained in C_Matrix_Dense. NOT passed by
@@ -152,7 +152,7 @@ class C_Matrix_Dense {
         return access_slice;
     }
     //!     iii. Slice: (row_range, col_range)
-    C_Matrix_Dense& operator() (std::vector<int> r_i, std::vector<int> c_i) { 
+    C_Matrix_Dense operator() (std::vector<int> r_i, std::vector<int> c_i) { 
         //! Access Contents of Matrix
         /*! 
         This function returns a slice of elements contained in C_Matrix_Dense. NOT passed by
@@ -466,7 +466,7 @@ class C_Matrix_Dense {
     }
 
     //! Matrix Multiplication
-    C_Matrix_Dense& operator*(C_Matrix_Dense& obj2) {
+    C_Matrix_Dense operator*(C_Matrix_Dense& obj2) {
         /*!
         Overloads * operator to allow two matrices to be multiplied.
 
@@ -497,7 +497,7 @@ class C_Matrix_Dense {
         return obj_out;
     }   
     //! Matrix Addition
-    C_Matrix_Dense& operator+(C_Matrix_Dense& obj2) {
+    C_Matrix_Dense operator+(C_Matrix_Dense& obj2) {
         // Check: Ensure both matrices are the same size
         check_size_addition((*this), obj2, "Addition");
 
@@ -508,7 +508,7 @@ class C_Matrix_Dense {
         return obj_out;
     }
     //! Matrix Subtraction
-    C_Matrix_Dense& operator-(C_Matrix_Dense& obj2) {
+    C_Matrix_Dense operator-(C_Matrix_Dense& obj2) {
         // Check: Ensure both matrices are the same size
         check_size_addition((*this), obj2, "Subtraction");
 
@@ -520,13 +520,13 @@ class C_Matrix_Dense {
     }
     
     //! Return copy of object containing matrix negation
-    C_Matrix_Dense& operator-() {
+    C_Matrix_Dense operator-() {
         C_Matrix_Dense obj_out = (*this);
         for (int ii = 0; ii < (*this).NNZ; ii++) { obj_out.values[ii] = -obj_out.values[ii]; }
         return obj_out;
     }
     //! Return copy of object flagged as Transposed
-    C_Matrix_Dense& T () {
+    C_Matrix_Dense T () {
         // Copy Matrix
         C_Matrix_Dense obj_out = (*this);
 
@@ -797,28 +797,28 @@ std::ostream& operator<<(std::ostream& os, C_Matrix_Dense obj) {
 }
 
 //! Generate Identity Matrix
-C_Matrix_Dense& identity(int dim) {
+C_Matrix_Dense identity(int dim) {
     C_Matrix_Dense obj_out(dim, dim);
     for (int ii = 0; ii < dim; ii++) { obj_out.values[(ii*(1+dim))] = 1; }
     return obj_out;
 }
 
 //! (Pre-) Scalar Multiplication
-C_Matrix_Dense& operator* (double scalar, const C_Matrix_Dense& obj2) {
+C_Matrix_Dense operator* (double scalar, const C_Matrix_Dense& obj2) {
     C_Matrix_Dense obj_out(obj2.row_size, obj2.col_size);
     for (int ii = 0; ii < obj2.NNZ; ii++) { obj_out.values[ii] = scalar*obj2.values[ii]; }
     return obj_out;
 }
 
 //! (Post-) Scalar Multiplication
-C_Matrix_Dense& operator* (const C_Matrix_Dense& obj2, double scalar) {
+C_Matrix_Dense operator* (const C_Matrix_Dense& obj2, double scalar) {
     C_Matrix_Dense obj_out(obj2.row_size, obj2.col_size);
     for (int ii = 0; ii < obj2.NNZ; ii++) { obj_out.values[ii] = scalar*obj2.values[ii]; }
     return obj_out;
 }
 
 //! Division by a Scalar
-C_Matrix_Dense& operator/ (const C_Matrix_Dense& obj2, double scalar) {
+C_Matrix_Dense operator/ (const C_Matrix_Dense& obj2, double scalar) {
     C_Matrix_Dense obj_out(obj2.row_size, obj2.col_size);
     for (int ii = 0; ii < obj2.NNZ; ii++) { obj_out.values[ii] = obj2.values[ii]/scalar; }
     return obj_out;
