@@ -267,7 +267,7 @@ class C_Matrix_Sparse{
         }
     }
     //!     iii. Add matrix at slices
-    void add_matr(C_Matrix_Dense mat, std::vector<int> r_i, std::vector<int> c_i) {
+    void add_matr(C_Matrix_Dense& mat, std::vector<int> r_i, std::vector<int> c_i) {
         //! Add Dense Matrix at Sliced Locations
         /*!
         Stores complete matrix mat at (row, pair) locations given by vectors a and b,
@@ -403,7 +403,7 @@ class C_Matrix_Sparse{
         }
     }
     //!     iii. Set matrix at slices
-    void set_matr(C_Matrix_Dense mat, std::vector<int> r_i, std::vector<int> c_i) {
+    void set_matr(C_Matrix_Dense& mat, std::vector<int> r_i, std::vector<int> c_i) {
         //! Set Dense Matrix at Sliced Locations
         /*!
         Stores complete matrix mat at (row, pair) locations given by vectors a and b,

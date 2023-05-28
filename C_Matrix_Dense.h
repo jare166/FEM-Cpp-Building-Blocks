@@ -29,7 +29,7 @@ namely:
 Author: Dominic Jarecki
 Date: 5-03-2022
 */
-class C_Matrix_Dense{
+class C_Matrix_Dense {
     public:
         std::vector<double> values;        //! All matrix values stored sequentially in vector
         int  row_size = -1, col_size = -1; //! Fixed size, not allowed to grow.
@@ -80,7 +80,7 @@ class C_Matrix_Dense{
     
     //! 2. Slice ACCESS Operations --> NOT PASSED BY REFERENCE
     //!     i.   Slice: (row, col_range)
-    C_Matrix_Dense operator() (int r_i, std::vector<int> c_i) { 
+    const C_Matrix_Dense operator() (int r_i, std::vector<int> c_i) { 
         //! Access Contents of Matrix
         /*! 
         This function returns a slice of elements contained in C_Matrix_Dense. NOT passed by
@@ -116,7 +116,7 @@ class C_Matrix_Dense{
         return access_slice;
     }
     //!     ii.  Slice: (row_range, col)
-    C_Matrix_Dense operator() (std::vector<int> r_i, int c_i) { 
+    const C_Matrix_Dense operator() (std::vector<int> r_i, int c_i) { 
         //! Access Contents of Matrix
         /*! 
         This function returns a slice of elements contained in C_Matrix_Dense. NOT passed by
@@ -152,7 +152,7 @@ class C_Matrix_Dense{
         return access_slice;
     }
     //!     iii. Slice: (row_range, col_range)
-    C_Matrix_Dense operator() (std::vector<int> r_i, std::vector<int> c_i) { 
+    const C_Matrix_Dense operator() (std::vector<int> r_i, std::vector<int> c_i) { 
         //! Access Contents of Matrix
         /*! 
         This function returns a slice of elements contained in C_Matrix_Dense. NOT passed by
@@ -269,7 +269,7 @@ class C_Matrix_Dense{
         for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] += mat_val; }
     }
     //!     iv. Add matrix at slices
-    void add_matr(C_Matrix_Dense mat, std::vector<int> r_i, std::vector<int> c_i) {
+    void add_matr(C_Matrix_Dense& mat, std::vector<int> r_i, std::vector<int> c_i) {
         //! Add Dense Matrix at Sliced Locations
         /*!
         Stores complete matrix mat at (row, pair) locations given by vectors a and b,
@@ -298,7 +298,7 @@ class C_Matrix_Dense{
     
     //! set(): OVER-WRITE PREVIOUSLY-STORED DATA
     //!     i. Set element at index
-    void set_elem(double val, int r_i, int c_i) {
+    void set_elem(const double val, int r_i, int c_i) {
         /*!
         This function sets elements in the dense matrix,
         OVERWRITING the previously contained value, if present.
@@ -374,7 +374,7 @@ class C_Matrix_Dense{
         for (int ii = 0; ii < (*this).NNZ; ii++) { (*this).values[ii] = mat_val; }
     }
     //!     iv. Set matrix at slices
-    void set_matr(C_Matrix_Dense mat, std::vector<int> r_i, std::vector<int> c_i) {
+    void set_matr(C_Matrix_Dense& mat, std::vector<int> r_i, std::vector<int> c_i) {
         //! Set Dense Matrix at Sliced Locations
         /*!
         Stores complete matrix mat at (row, pair) locations given by vectors a and b,
@@ -466,7 +466,7 @@ class C_Matrix_Dense{
     }
 
     //! Matrix Multiplication
-    C_Matrix_Dense operator*(C_Matrix_Dense obj2) {
+    C_Matrix_Dense operator*(C_Matrix_Dense& obj2) {
         /*!
         Overloads * operator to allow two matrices to be multiplied.
 
@@ -498,7 +498,7 @@ class C_Matrix_Dense{
     }
     
     //! Matrix Addition
-    C_Matrix_Dense operator+(C_Matrix_Dense obj2) {
+    C_Matrix_Dense operator+(C_Matrix_Dense& obj2) {
         // Check: Ensure both matrices are the same size
         check_size_addition((*this), obj2, "Addition");
 
@@ -509,7 +509,7 @@ class C_Matrix_Dense{
         return obj_out;
     }
     //! Matrix Subtraction
-    C_Matrix_Dense operator-(C_Matrix_Dense obj2) {
+    C_Matrix_Dense operator-(C_Matrix_Dense& obj2) {
         // Check: Ensure both matrices are the same size
         check_size_addition((*this), obj2, "Subtraction");
 
@@ -540,7 +540,7 @@ class C_Matrix_Dense{
     }
 
     //! Inner Product
-    double inner_product(C_Matrix_Dense obj2) {
+    double inner_product(const C_Matrix_Dense& obj2) {
         if ((*this).NNZ != obj2.NNZ) { 
             std::string error_message = "Inner product failed. NNZ elements mismatch.";
             error_message = error_message + ". Error in: " + __FILE__ + ", at line " + std::to_string(__LINE__) + ".";
@@ -562,7 +562,7 @@ class C_Matrix_Dense{
     //! ERROR-CHECK UTILITIES
     //! 1. Check Access
     //!     i. Check Access (input: index, index)
-    void check_size_access(C_Matrix_Dense obj1, int r_i, int c_i) {
+    void check_size_access(const C_Matrix_Dense& obj1, int r_i, int c_i) {
         //! Check that matrix sizes match before addition, etc.
         /*!
         This function checks matrix having its value accessed to ensure no
@@ -596,7 +596,7 @@ class C_Matrix_Dense{
         
     }
     //!     ii. Check Access (input: index, slice)
-    void check_size_access(C_Matrix_Dense obj1, int r_i, std::vector<int> c_i) {
+    void check_size_access(const C_Matrix_Dense& obj1, int r_i, std::vector<int> c_i) {
         //! Check that matrix sizes match before addition, etc.
         /*!
         This function checks matrix having its value accessed to ensure no
@@ -631,7 +631,7 @@ class C_Matrix_Dense{
         }
     }
     //!     iii. Check Access (input: slice, index)
-    void check_size_access(C_Matrix_Dense obj1, std::vector<int> r_i, int c_i) {
+    void check_size_access(const C_Matrix_Dense& obj1, std::vector<int> r_i, int c_i) {
         //! Check that matrix sizes match before addition, etc.
         /*!
         This function checks matrix having its value accessed to ensure no
@@ -667,7 +667,7 @@ class C_Matrix_Dense{
         
     }
     //!     iv. Check Access (input: slice, slice)
-    void check_size_access(C_Matrix_Dense obj1, std::vector<int> r_i, std::vector<int> c_i) {
+    void check_size_access(const C_Matrix_Dense& obj1, std::vector<int> r_i, std::vector<int> c_i) {
         //! Check that matrix sizes match before addition, etc.
         /*!
         This function checks matrix having its value accessed to ensure no
@@ -705,7 +705,7 @@ class C_Matrix_Dense{
     }
 
     //! 2. Check dimensions for addition, subtration, and asignment
-    void check_size_addition(C_Matrix_Dense obj1, C_Matrix_Dense obj2, std::string op_string) {
+    void check_size_addition(const C_Matrix_Dense& obj1, const C_Matrix_Dense& obj2, std::string op_string) {
         //! Check that matrix sizes match before addition, etc.
         /*!
         This function checks size of two matrices intended for operations such as 
@@ -734,7 +734,7 @@ class C_Matrix_Dense{
     }
 
     //! 3. Check dimensions for multiplication
-    void check_size_multiplication(C_Matrix_Dense obj1, C_Matrix_Dense obj2, std::string op_string, int& ii_M, int& jj_M, int& kk_M) {
+    void check_size_multiplication(const C_Matrix_Dense& obj1, const C_Matrix_Dense& obj2, std::string op_string, int& ii_M, int& jj_M, int& kk_M) {
         //! Check that matrix inner dimensions match before multiplication
         /*!
         This function checks size of two matrices intended for a multiplication
