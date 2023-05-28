@@ -80,7 +80,7 @@ class C_Matrix_Dense {
     
     //! 2. Slice ACCESS Operations --> NOT PASSED BY REFERENCE
     //!     i.   Slice: (row, col_range)
-    const C_Matrix_Dense operator() (int r_i, std::vector<int> c_i) { 
+    C_Matrix_Dense operator() (int r_i, std::vector<int> c_i) { 
         //! Access Contents of Matrix
         /*! 
         This function returns a slice of elements contained in C_Matrix_Dense. NOT passed by
@@ -116,7 +116,7 @@ class C_Matrix_Dense {
         return access_slice;
     }
     //!     ii.  Slice: (row_range, col)
-    const C_Matrix_Dense operator() (std::vector<int> r_i, int c_i) { 
+    C_Matrix_Dense operator() (std::vector<int> r_i, int c_i) { 
         //! Access Contents of Matrix
         /*! 
         This function returns a slice of elements contained in C_Matrix_Dense. NOT passed by
@@ -152,7 +152,7 @@ class C_Matrix_Dense {
         return access_slice;
     }
     //!     iii. Slice: (row_range, col_range)
-    const C_Matrix_Dense operator() (std::vector<int> r_i, std::vector<int> c_i) { 
+    C_Matrix_Dense operator() (std::vector<int> r_i, std::vector<int> c_i) { 
         //! Access Contents of Matrix
         /*! 
         This function returns a slice of elements contained in C_Matrix_Dense. NOT passed by
