@@ -45,8 +45,9 @@ class C_Material{
 void stiffnessMatrix_AxialBar(int itEl, C_Mesh_Frame& mesh, C_Material& mat, 
     C_Matrix_Sparse& kGlobal, C_LagrangeBasis_1D& feL, C_GaussPoint_1D& GP_Data){
     
-    std::vector<int>      elDoF = mesh.elements[itEl];
-    std::vector<double> elNodes = {mesh.nodes[elDoF[0]][0], mesh.nodes[elDoF[1]][0]};
+    int elDOF_0 = mesh.elements(itEl,0);
+    int elDOF_1 = mesh.elements(itEl,1);
+    std::vector<double> elNodes = {mesh.nodes(elDOF_0, 0), mesh.nodes(elDOF_1, 0)};
 
     double le = elNodes[1] - elNodes[0];
 
@@ -61,7 +62,7 @@ void stiffnessMatrix_AxialBar(int itEl, C_Mesh_Frame& mesh, C_Material& mat,
         C_Matrix_Dense S11 = JxW*mat.EA*(dsp_L.T()*dsp_L);
 
         // Add to Global Coefficient Matrix
-        kGlobal.add_matr(S11, elDoF, elDoF);
+        kGlobal.add_matr(S11, {elDOF_0, elDOF_1}, {elDOF_0, elDOF_1});
     }
 }
 
