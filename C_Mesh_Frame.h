@@ -33,14 +33,14 @@ class C_Mesh_Frame : public C_Mesh{
 
     //! I. ELEMENT CONSTRUCTION
     //!     Construct Individual 1D Element (Multiple sub-elements Between Principle Nodes)
-    void construct_elems(std::vector<double> x_start, std::vector<double> x_end, std::vector<int> x_num, int num_El_sub, int& kk_NODE, int& kk_CONN) {
+    void construct_elems( double x1_S, double x2_S, double x3_S,   double x1_E, double  x2_E, double x3_E,   int N1_num, int N2_num,   int num_El_sub, int& kk_NODE, int& kk_CONN) {
         /*!
         This function constructs 1D elements. They can be used singly or in a space frame.
 
         INPUT:
-        \param x_start    Position and node number of first point used in construction of 1D element.   { (x1, y1, z1) }
-        \param x_end      Position and node number of second point used in construction of 1D element.  { (x2, y2, z2) }
-        \param x_num      Node numbers. {xN1, xN2}
+        \param x_S        Position and node number of first point used in construction of 1D element.   { (x1, y1, z1) }
+        \param x_E        Position and node number of second point used in construction of 1D element.  { (x2, y2, z2) }
+        \param N_num      Node numbers. {xN1, xN2}
         \param num_El_sub Number of elements to divide 1D section into.
         \param kk_NODE    Location to begin storing in global nodal vectors; note that this will also be the first new member for connectivity.
         \param kk_CONN    Location to begin storing in global connectivity vectors.
@@ -59,15 +59,11 @@ class C_Mesh_Frame : public C_Mesh{
                     Principal nodes can retain their numbers, making BC assignment easier.
         */
         
-        std::vector<double> sp_x, sp_y, sp_z;
+        double delt_x, delt_y, delt_z;
 
-        sp_x = linspace(num_El_sub+1, x_start[0], x_end[0]); 
-        sp_y = linspace(num_El_sub+1, x_start[1], x_end[1]); 
-        sp_z = linspace(num_El_sub+1, x_start[2], x_end[2]); 
-
-        // Principal node numbers
-        int N1_num = x_num[0];
-        int N2_num = x_num[1];
+        delt_x = (x1_E - x1_S) / num_El_sub; 
+        delt_y = (x2_E - x2_S) / num_El_sub; 
+        delt_z = (x3_E - x3_S) / num_El_sub; 
 
         int jj = 0;
         if (num_El_sub == 1) {
@@ -89,9 +85,9 @@ class C_Mesh_Frame : public C_Mesh{
                     elements[kk_CONN] = {kk_NODE, N2_num};    
 
                     // Store FINAL Interior Node
-                    nodes[kk_NODE][0] = sp_x[ii]; 
-                    nodes[kk_NODE][1] = sp_y[ii]; 
-                    nodes[kk_NODE][2] = sp_z[ii]; 
+                    nodes[kk_NODE][0] = x1_E; 
+                    nodes[kk_NODE][1] = x2_E; 
+                    nodes[kk_NODE][2] = x3_E; 
                     kk_NODE++;  
                 }
                 else { 
@@ -99,9 +95,9 @@ class C_Mesh_Frame : public C_Mesh{
                     elements[kk_CONN] = {kk_NODE, (kk_NODE+1)}; 
 
                     // Store Interior Node
-                    nodes[kk_NODE][0] = sp_x[ii]; 
-                    nodes[kk_NODE][1] = sp_y[ii]; 
-                    nodes[kk_NODE][2] = sp_z[ii]; 
+                    nodes[kk_NODE][0] = x1_S + ii*delt_x; 
+                    nodes[kk_NODE][1] = x2_S + ii*delt_y; 
+                    nodes[kk_NODE][2] = x3_S + ii*delt_z; 
                     kk_NODE++;
                 }
                 kk_CONN++;
@@ -148,7 +144,7 @@ class C_Mesh_Frame : public C_Mesh{
             x2_E = x_NODE[jj_E][2];
             x3_E = x_NODE[jj_E][3];
 
-            construct_elems( {x1_S, x2_S, x3_S}, {x1_E, x2_E, x3_E}, {jj_S, jj_E}, N, kk_NODE, kk_CONN );
+            construct_elems( x1_S, x2_S, x3_S,   x1_E, x2_E, x3_E,   jj_S, jj_E,   N, kk_NODE, kk_CONN );
         }
     }
 

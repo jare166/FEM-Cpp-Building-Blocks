@@ -18,7 +18,7 @@ int main()
     C_Mesh_Frame mesh(3);
 
     int kk_n = 0, kk_l = 0;
-    mesh.construct_elems({0,0,0}, {1,0,0}, {1, 2}, 5, kk_n, kk_l);
+    mesh.construct_elems( 0.0, 0.0, 0.0,  1.0, 0.0, 0.0,  1, 2,  5, kk_n, kk_l);
 
     C_GaussPoint_1D GP_Data(2);
     C_LagrangeBasis_1D feL(1, GP_Data);
