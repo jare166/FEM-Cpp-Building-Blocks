@@ -26,8 +26,8 @@ class C_HermiteBasis_1D{
         num_sp = 4;
         
         // Assign new, correctly-sized dense matrices to member variables
-        this -> sp = C_Matrix_Dense(GP_Data.num_GP, num_sp);
-        this -> dsp = C_Matrix_Dense(GP_Data.num_GP, num_sp);
+        this -> sp   = C_Matrix_Dense(GP_Data.num_GP, num_sp);
+        this -> dsp  = C_Matrix_Dense(GP_Data.num_GP, num_sp);
         this -> ddsp = C_Matrix_Dense(GP_Data.num_GP, num_sp);
 
         for (int ii = 0; ii < GP_Data.num_GP; ii++){

@@ -15,8 +15,8 @@ template<typename T> std::vector<T> linspace(int num_in, T start_in, T end_in);
 //! This class is used to store data describing a mesh of 1, 2, or 3 dimensions.
 class C_Mesh{
     public:
-        std::vector< std::vector<double> > nodes;
-        std::vector< std::vector<int> >    elements;
+        C_Matrix_Dense nodes;
+        C_Matrix_Dense elements;
         int num_NPE = 0; //! Nodes per element
         int num_Nd  = 0; //! Total number of nodes
         int num_El  = 0; //! Total number of elements
@@ -26,9 +26,9 @@ class C_Mesh{
 
     void update_mesh(C_Matrix_Dense& sol) {
         for (int ii = 0; ii < num_Nd; ii++) { 
-            nodes[ii][0] = sol.values[6*ii];
-            nodes[ii][1] = sol.values[6*ii+1];
-            nodes[ii][2] = sol.values[6*ii+2];
+            nodes(ii, 0) = sol.values[6*ii];
+            nodes(ii, 1) = sol.values[6*ii+1];
+            nodes(ii, 2) = sol.values[6*ii+2];
         }
     }
 
@@ -40,7 +40,7 @@ class C_Mesh{
         fID << "num_lines," << num_El << "\n";
 
         // ii. List Connectivity
-        for (int ii = 0; ii < num_El; ii++) {  fID << elements[ii][0] << "," << elements[ii][1] << "\n"; }
+        for (int ii = 0; ii < num_El; ii++) {  fID << elements(ii, 0) << "," << elements(ii, 1) << "\n"; }
 
         fID.close();
     }
@@ -57,7 +57,7 @@ class C_Mesh{
             fID << ii << ", ";
 
             // iii. List Nodes
-            for (int jj = 0; jj < dim; jj++) { fID << nodes[ii][jj] << ","; } 
+            for (int jj = 0; jj < dim; jj++) { fID << nodes(ii, jj) << ","; } 
             fID << "\n";
         }
 

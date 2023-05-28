@@ -19,8 +19,8 @@ class C_Mesh_Frame : public C_Mesh{
     INHERITED PROPERTIES:
 
     public:
-        std::vector< std::vector<double> > nodes;
-        std::vector< std::vector<int> >    elements;
+        C_Matrix_Dense nodes;
+        C_Matrix_Dense elements;
         int num_NPE = 2; //! Nodes per element
         int num_Nd  = 0; //! Total number of nodes
         int num_El  = 0; //! Total number of elements
@@ -68,7 +68,8 @@ class C_Mesh_Frame : public C_Mesh{
         int jj = 0;
         if (num_El_sub == 1) {
             // 1. Single Element: No additional nodes (other than principal nodes) added
-            elements[kk_CONN] = {N1_num, N2_num};
+            elements(kk_CONN, 0) = N1_num;
+            elements(kk_CONN, 1) = N2_num;
             kk_CONN++;  
         }
         else {
@@ -78,26 +79,29 @@ class C_Mesh_Frame : public C_Mesh{
             for (int ii = 0; ii < num_El_sub; ii++) {
                 if (ii == 0) { 
                     // i. Store Connectivity w/ First Principal Node
-                    elements[kk_CONN] = {N1_num, kk_NODE}; 
+                    elements(kk_CONN, 0) = N1_num;
+                    elements(kk_CONN, 1) = kk_NODE;
                     }
                 else if (ii == (num_El_sub-1)) { 
                     // ii. Store Connectivity w/ Second Principal Node
-                    elements[kk_CONN] = {kk_NODE, N2_num};    
+                    elements(kk_CONN, 0) = kk_NODE;
+                    elements(kk_CONN, 1) = N2_num;
 
                     // Store FINAL Interior Node
-                    nodes[kk_NODE][0] = x1_E; 
-                    nodes[kk_NODE][1] = x2_E; 
-                    nodes[kk_NODE][2] = x3_E; 
+                    nodes(kk_NODE, 0) = x1_E; 
+                    nodes(kk_NODE, 1) = x2_E; 
+                    nodes(kk_NODE, 2) = x3_E; 
                     kk_NODE++;  
                 }
                 else { 
                     // iii. Interior Connectivity; No Principal Nodes Involved
-                    elements[kk_CONN] = {kk_NODE, (kk_NODE+1)}; 
+                    elements(kk_CONN, 0) = kk_NODE;
+                    elements(kk_CONN, 1) =(kk_NODE+1);
 
                     // Store Interior Node
-                    nodes[kk_NODE][0] = x1_S + ii*delt_x; 
-                    nodes[kk_NODE][1] = x2_S + ii*delt_y; 
-                    nodes[kk_NODE][2] = x3_S + ii*delt_z; 
+                    nodes(kk_NODE, 0) = x1_S + ii*delt_x; 
+                    nodes(kk_NODE, 1) = x2_S + ii*delt_y; 
+                    nodes(kk_NODE, 2) = x3_S + ii*delt_z; 
                     kk_NODE++;
                 }
                 kk_CONN++;
@@ -106,7 +110,7 @@ class C_Mesh_Frame : public C_Mesh{
 
     }
     //!     Construct Frame from Nodal Data and Connectivity
-    void construct_frame(std::vector< std::vector<double> > x_NODE, std::vector< std::vector<double> > x_CONN) {
+    void construct_frame(C_Matrix_Dense& x_NODE, C_Matrix_Dense& x_CONN) {
         double len_elem;
 
         double x1_S, x2_S, x3_S; // Start Coordinates
@@ -117,32 +121,32 @@ class C_Mesh_Frame : public C_Mesh{
         int N;                // Number of Elements, Per Nodal Pair
 
         // Store Principal Nodes
-        kk_NODE = x_NODE.size();
+        kk_NODE = x_NODE.row_size;
         kk_CONN = 0;
         for (int ii = 0; ii < kk_NODE; ii++) {
-            nodes[ii][0] = x_NODE[ii][1]; 
-            nodes[ii][1] = x_NODE[ii][2]; 
-            nodes[ii][2] = x_NODE[ii][3]; 
+            nodes(ii, 0) = x_NODE(ii, 1); 
+            nodes(ii, 1) = x_NODE(ii, 2); 
+            nodes(ii, 2) = x_NODE(ii, 3); 
         }
 
         // Store Interior Nodes and Connectivity
-        for (int ii = 0; ii < x_CONN.size(); ii++) {
+        for (int ii = 0; ii < x_CONN.row_size; ii++) {
             
             // Start and End Indices
-            jj_S = x_CONN[ii][0];
-            jj_E = x_CONN[ii][1];
+            jj_S = x_CONN(ii, 0);
+            jj_E = x_CONN(ii, 1);
 
             // Number of Elements in Between Nodal Pair
-            N = x_CONN[ii][2];
+            N = x_CONN(ii, 2);
 
             // Start and End Coordinates
-            x1_S = x_NODE[jj_S][1];
-            x2_S = x_NODE[jj_S][2];
-            x3_S = x_NODE[jj_S][3];
+            x1_S = x_NODE(jj_S, 1);
+            x2_S = x_NODE(jj_S, 2);
+            x3_S = x_NODE(jj_S, 3);
 
-            x1_E = x_NODE[jj_E][1];
-            x2_E = x_NODE[jj_E][2];
-            x3_E = x_NODE[jj_E][3];
+            x1_E = x_NODE(jj_E, 1);
+            x2_E = x_NODE(jj_E, 2);
+            x3_E = x_NODE(jj_E, 3);
 
             construct_elems( x1_S, x2_S, x3_S,   x1_E, x2_E, x3_E,   jj_S, jj_E,   N, kk_NODE, kk_CONN );
         }
@@ -174,7 +178,7 @@ class C_Mesh_Frame : public C_Mesh{
         str_1 >> num_pr_nodes;
 
         // Assign nodal storage vectors
-        std::vector< std::vector<double> >  x_NODE( num_pr_nodes, std::vector<double>(4, 0.0) );
+        C_Matrix_Dense x_NODE(num_pr_nodes, 4);
         //  Details: vector of num_pr_nodes, 4-column vectors, each w/ default value of 0.0.
 
         // Read Successive Lines for Data
@@ -189,10 +193,10 @@ class C_Mesh_Frame : public C_Mesh{
             std::getline(str_1, word, ','); str_1 >> temp_val_3;
             std::getline(str_1, word, ','); str_1 >> temp_val_4;
             
-            x_NODE[iter_read][0] = temp_val_1; // Node Number
-            x_NODE[iter_read][1] = temp_val_2; // x-coord
-            x_NODE[iter_read][2] = temp_val_3; // y-coord
-            x_NODE[iter_read][3] = temp_val_4; // z-coord
+            x_NODE(iter_read, 0) = temp_val_1; // Node Number
+            x_NODE(iter_read, 1) = temp_val_2; // x-coord
+            x_NODE(iter_read, 2) = temp_val_3; // y-coord
+            x_NODE(iter_read, 3) = temp_val_4; // z-coord
 
             // Exit if requested number of lines has been read
             iter_read++;
@@ -218,7 +222,7 @@ class C_Mesh_Frame : public C_Mesh{
         str_2 >> num_connect;
 
         // Assign nodal storage vectors
-        std::vector< std::vector<double> >  x_CONN( num_connect, std::vector<double>(3, 0.0) );
+        C_Matrix_Dense x_CONN(num_connect, 3);
         //  Details: vector of num_connect, 3-column vectors, each w/ default value of 0.0.
 
         // Read Successive Lines for Data
@@ -232,9 +236,9 @@ class C_Mesh_Frame : public C_Mesh{
             std::getline(str_2, word, ','); str_2 >> temp_val_2;
             std::getline(str_2, word, ','); str_2 >> temp_val_3;
             
-            x_CONN[iter_read][0] = min(temp_val_1, temp_val_2); // Start Node Number
-            x_CONN[iter_read][1] = max(temp_val_1, temp_val_2); // End   Node Number
-            x_CONN[iter_read][2] = temp_val_3;                  // Number of Elements
+            x_CONN(iter_read, 0) = min(temp_val_1, temp_val_2); // Start Node Number
+            x_CONN(iter_read, 1) = max(temp_val_1, temp_val_2); // End   Node Number
+            x_CONN(iter_read, 2) = temp_val_3;                  // Number of Elements
 
             // Exit if requested number of lines has been read
             iter_read++;
@@ -250,12 +254,13 @@ class C_Mesh_Frame : public C_Mesh{
         num_Nd = num_pr_nodes;
         num_El = 0;
         for (int ii = 0; ii < num_connect; ii++) { 
-            num_Nd += (x_CONN[ii][2]-1); 
-            num_El +=  x_CONN[ii][2];
+            num_Nd += (x_CONN(ii, 2)-1); 
+            num_El +=  x_CONN(ii, 2);
         }
 
-        nodes.resize(num_Nd, std::vector<double>(3, 0));
-        elements.resize(num_El, std::vector<int>(2, 0));
+        // Set Storage Matrices to Correct Size
+        this -> nodes    = C_Matrix_Dense(num_Nd, 3);
+        this -> elements = C_Matrix_Dense(num_El, 2);
 
         // Add Data to Global Mesh Objects
         construct_frame(x_NODE, x_CONN);
