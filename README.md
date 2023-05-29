@@ -4,7 +4,7 @@
 Introduction
 ------------
 This repository contains C++ classes intended to allow rapid building and construction of Finite Element code. Implementation is split into two main classes:
- * **C_Matrix_Dense** - Stores a matrix as a vector in [Row-Major format][RMF_LINK]. Supports all standard matrix manipulations, including addition, subtraction, matrix and scalar multiplication and transposition. Size is determined at initialization/assignment; dynamic resize is *not allowed*. Use `C_Matrix_Dense` to construct individual elements.
+ * **C_Matrix_Dense** - Stores a matrix as a vector in [Row-Major format][RMF_LINK]. Supports all standard matrix manipulations, including addition, subtraction, matrix and scalar multiplication and transposition. Size is determined at initialization/assignment; dynamic resize is *not allowed*. Use `C_Matrix_Dense` to construct individual elements. `C_Matrix_Dense` is now set up as template class, and allows specification of the type of data it holds, as, for example,  `C_Matrix_Dense<int>` or `C_Matrix_Dense<double>`.
  * **C_Matrix_Sparse** - Stores a matrix as a vector of linked lists, retaining only non-zero (and accessed) elements. By default, stores in [COO][COO_LINK] format; use this for initialization of the object. If needed, convert to [CSR][CSR_LINK] representation, by calling `C_Matrix_Sparse::convert_to_CSR()`. Use `C_Matrix_Sparse` to assemble element matrices into a lightweight sparse matrix in formats suitable for use with different solver libraries.
 
 Overloaded output-stream (<<) operator allows user-friendly viewing of matrix contents for each class. `C_Matrix_Sparse::print_contents()` displays non-zero elements only.
@@ -21,9 +21,9 @@ Implementation
 >Basic Assignment to Matrices
 
 ```c++
-C_Matrix_Dense A(2,2) = {1, 2, 3, 4}; // Stored as { {1, 2}; {3, 4} } --> Enter in Row-Major ordering
+C_Matrix_Dense<int> A(2,2) = {1, 2, 3, 4}; // Stored as { {1, 2}; {3, 4} } --> Enter in Row-Major ordering
 
-C_Matrix_Dense B(2,2);
+C_Matrix_Dense<int> B(2,2);
 B = -A.T(); // Set B equal to negative of A-transpose.
 ```
 
