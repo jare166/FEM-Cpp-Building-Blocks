@@ -15,10 +15,10 @@ int main()
 {
     // 0. Initialize Governing Objects
     C_Material mat;
-    C_Mesh_Frame mesh(3,2,5);
+    C_Mesh_Frame mesh(3,20,19);
 
     int kk_n = 0, kk_l = 0;
-    mesh.construct_elems( 0.0, 0.0, 0.0,  1.0, 0.0, 0.0,  1, 2,  5, kk_n, kk_l);
+    mesh.construct_elems( 0.0, 0.0, 0.0,  1.0, 0.0, 0.0,  0, 1,  19, kk_n, kk_l);
 
     C_GaussPoint_1D GP_Data(2);
     C_LagrangeBasis_1D feL(1, GP_Data);
