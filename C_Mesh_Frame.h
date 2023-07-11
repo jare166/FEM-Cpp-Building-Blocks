@@ -21,7 +21,7 @@ class C_Mesh_Frame : public C_Mesh{
     public:
         C_Matrix_Dense<double> nodes;
         C_Matrix_Dense<int> elements;
-        int num_NPE = 2; //! Nodes per element
+        int num_NPE = 0; //! Nodes per element (NOT CURRENTLY USED)
         int num_Nd  = 0; //! Total number of nodes
         int num_El  = 0; //! Total number of elements
         int dim = 2;     //! Dimension of mesh
@@ -29,7 +29,20 @@ class C_Mesh_Frame : public C_Mesh{
     
     public:
 
+    //! Object Constructor 1:
+    //!     Determine number of nodes and elements from file.
     C_Mesh_Frame(int dim_in){ dim = dim_in; }
+    //! Object Constructor 2:
+    //!     Specify number of nodes and elements directly.
+    C_Mesh_Frame(int dim_in, int num_Nd_in, int num_El_in){ 
+        dim = dim_in; 
+        num_Nd = num_Nd_in;
+        num_El = num_El_in;
+
+        // Set Storage Matrices to Correct Size
+        this -> nodes    = C_Matrix_Dense<double>(num_Nd, 3);
+        this -> elements = C_Matrix_Dense<int>(num_El, 2);
+    }
 
     //! I. ELEMENT CONSTRUCTION
     //!     Construct Individual 1D Element (Multiple sub-elements Between Principle Nodes)
