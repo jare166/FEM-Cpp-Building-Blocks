@@ -51,7 +51,7 @@ void stiffnessMatrix_AxialBar(int itEl, C_Mesh_Frame& mesh, C_Material& mat,
 
     double le = elNodes[1] - elNodes[0];
 
-    C_Matrix_Dense dsp_L;
+    C_Matrix_Dense<double> dsp_L;
     for (int itGp = 0; itGp < GP_Data.num_GP; itGp++) {
 
         int ns_L = feL.num_sp;
@@ -59,7 +59,7 @@ void stiffnessMatrix_AxialBar(int itEl, C_Mesh_Frame& mesh, C_Material& mat,
         // Extract Rows at each Gauss Point
         dsp_L = (2/le)*feL.dsp(itGp, intspace(0,ns_L));
         double JxW = 0.5*GP_Data.wt[itGp]*le;
-        C_Matrix_Dense S11 = JxW*mat.EA*(dsp_L.T()*dsp_L);
+        C_Matrix_Dense<double> S11 = JxW*mat.EA*(dsp_L.T()*dsp_L);
 
         // Add to Global Coefficient Matrix
         kGlobal.add_matr(S11, {elDOF_0, elDOF_1}, {elDOF_0, elDOF_1});

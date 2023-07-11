@@ -15,7 +15,7 @@ int main()
 {
     // 0. Initialize Governing Objects
     C_Material mat;
-    C_Mesh_Frame mesh(3);
+    C_Mesh_Frame mesh(3,2,5);
 
     int kk_n = 0, kk_l = 0;
     mesh.construct_elems( 0.0, 0.0, 0.0,  1.0, 0.0, 0.0,  1, 2,  5, kk_n, kk_l);
